@@ -30,23 +30,6 @@ Notation "A -> B" :=
   : type_scope.
 
 
-(* TODO: explain *)
-
-Definition comp {A B C : Type} (f : A -> B) (g : B -> C) : A -> C :=
-  fun (x : A) => g (f x).
-
-Notation "g ∘ f" :=
-  (comp f g)
-  : core_scope.
-
-Lemma comp_assoc {A B C D : Type}
-  (f : A -> B) (g : B -> C) (h : C -> D)
-  : (h ∘ (g ∘ f)) = ((h ∘ g) ∘ f).
-Proof.
-  intros. reflexivity.
-Qed.
-
-
 (** * Pares *)
 
 (** [A × B] é o tipo dos _pares_ de [A : Type] e [B : Type], onde um par

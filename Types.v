@@ -5,8 +5,25 @@ From TypesAndCats Require Import Primitives.
 
 (* TODO: explain *)
 
-Definition id {A : Type} : A -> A :=
-  fun (x : A) => x.
+Definition comp {A B C : Type} (f : A -> B) (g : B -> C) (x : A) : C :=
+  g (f x).
+
+Notation "g ∘ f" :=
+  (comp f g)
+  : core_scope.
+
+Lemma comp_assoc {A B C D : Type}
+  (f : A -> B) (g : B -> C) (h : C -> D)
+  : (h ∘ (g ∘ f)) = ((h ∘ g) ∘ f).
+Proof.
+  intros. reflexivity.
+Qed.
+
+
+(* TODO: explain *)
+
+Definition id {A : Type} (x : A) :A :=
+  x.
 
 Lemma id_unit_r {A B : Type} (f : A -> B) : (f ∘ id) = f.
 Proof.
