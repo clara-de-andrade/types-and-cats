@@ -13,9 +13,9 @@ ALLVFILES := Primitives.v Types.v Paths.v
 build:
 	$(MAKE) -f Makefile.coq
 
-clean:
+clean::
 	if [ -e Makefile.coq ]; then $(MAKE) -f Makefile.coq cleanall; fi
-	$(RM) $(wildcard Makefile.coq Makefile.coq.conf) *.html
+	$(RM) $(wildcard Makefile.coq Makefile.coq.conf coqdoc.css) *.html
 
 docs:
 	coqdoc $(COQDOCFLAGS) $(ALLVFILES)
