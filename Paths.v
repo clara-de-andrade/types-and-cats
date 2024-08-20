@@ -86,13 +86,19 @@ Proof.
 Defined.
 
 
-Example eucl_l {A : Type} {a b : A} (p : a ~> b)
-  : forall c : A, c ~> a -> c ~> b :=
-  fun c => transport (fun x => c ~> x) p.
+Example eucl_l {A : Type} (a b c : A)
+  (p : a ~> c) (q : b ~> c) : a ~> b.
+Proof.
+  induction p, q.
+  reflexivity.
+Qed.
 
-Example eucl_r {A : Type} {a b : A} (p : a ~> b)
-  : forall c : A, a ~> c -> b ~> c :=
-  fun c => transport (fun x => x ~> c) p.
+Example eucl_r {A : Type} (a b c : A)
+  (p : a ~> b) (q : a ~> c) : b ~> c.
+Proof.
+  induction p, q.
+  reflexivity.
+Qed.
 
 
 Example tr_ref {A : Type} {x : A} : (ref x • ref x) = ref x.

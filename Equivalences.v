@@ -11,27 +11,31 @@ Infix "~" := homotopy
   (at level 99)
   : core_scope.
 
-Example homotopy_ref {A : Type} {P : A -> Type}
+
+Definition homotopy_ref {A : Type} {P : A -> Type}
   (f : Π (x : A), P x) : f ~ f :=
   fun x => ref (f x).
+
 Instance homotopy_reflexive (A : Type) (P : A -> Type)
   : Reflexive (@homotopy A P).
 Proof.
   exact homotopy_ref.
 Defined.
 
-Example homotopy_sym {A : Type} {P : A -> Type}
+Definition homotopy_sym {A : Type} {P : A -> Type}
   (f g : Π (x : A), P x) (alph : f ~ g) : g ~ f :=
   fun x => (alph x)^-1.
+
 Instance homotopy_symmetric (A : Type) (P : A -> Type)
   : Symmetric (@homotopy A P).
 Proof.
   exact homotopy_sym.
 Defined.
 
-Example homotopy_tr {A : Type} {P : A -> Type}
+Definition homotopy_tr {A : Type} {P : A -> Type}
   (f g h : Π (x : A), P x) (alph : f ~ g) (beta : g ~ h) : f ~ h :=
   fun x => (alph x) • (beta x).
+
 Instance homotopy_transitive (A : Type) (P : A -> Type)
   : Transitive (@homotopy A P).
 Proof.
@@ -64,12 +68,12 @@ Infix "·" := homotopy_comp
   (at level 99)
   :  core_scope.
 
-Example homotopy_comp_l {A B C : Type}
+Definition homotopy_comp_l {A B C : Type}
   (f f' : A -> B) (g : B -> C)
   (alph : f ~ f') : g ∘ f ~ g ∘ f' :=
   homotopy_comp f f' g g alph (homotopy_ref g).
 
-Example homotopy_comp_r {A B C : Type}
+Definition homotopy_comp_r {A B C : Type}
   (f : A -> B) (g g' : B -> C)
   (beta : g ~ g') : g ∘ f ~ g' ∘ f :=
   homotopy_comp f f g g' (homotopy_ref f) beta.
@@ -91,21 +95,27 @@ Definition logeqv (A B : Type) : Type
 Infix "<->" := logeqv
   : type_scope.
 
+
 Example logeqv_ref (A : Type) : A <-> A := (id, id).
+
 Instance logeqv_reflexive : Reflexive logeqv.
 Proof.
   exact logeqv_ref.
 Defined.
 
+
 Example logeqv_sym (A B : Type) : (A <-> B) -> (B <-> A) :=
   fun e => match e with  (f, g) => (g, f) end.
+
 Instance logeqv_symmetric : Symmetric logeqv.
 Proof.
   exact logeqv_sym.
 Defined.
 
+
 Example logeqv_tr (A B C : Type) : (A <-> B) -> (B <-> C) -> (A <-> C) :=
   fun e1 e2 => match e1, e2 with (f, f'), (g, g') => (g ∘ f, f' ∘ g') end.
+  
 Instance logeqv_transitive : Transitive logeqv.
 Proof.
   exact logeqv_tr.
@@ -114,7 +124,6 @@ Defined.
 
 Definition qinv {A B : Type} (f : A -> B) : Type
   := ∑ (g : B -> A), ((g ∘ f ~ id) × (f ∘ g ~ id)).
-
 
 Definition qinv_to_op {A B : Type} (f : A -> B) : qinv f -> B -> A :=
   fun e => fst e.
@@ -263,17 +272,17 @@ Example homeqv_tr (A B C : Type) : A ≃ B -> B ≃ C -> A ≃ C.
 Proof.
   intros e1 e2.
   destruct e1 as [f p1].
-  apply isequiv_to_qinv in p1.
   destruct e2 as [g p2].
-  apply isequiv_to_qinv in p2.
 
   unfold homeqv.
   exists (g ∘ f).
   apply qinv_to_isequiv.
 
   apply qinv_comp.
-  - exact p1.
-  - exact p2.
+  - apply isequiv_to_qinv.
+    exact p1.
+  - apply isequiv_to_qinv.
+    exact p2.
 Defined.
 
 Instance homeqv_transitive
@@ -281,3 +290,7 @@ Instance homeqv_transitive
 Proof.
   exact homeqv_tr.
 Defined.
+
+
+Definition idtoeqv {A B : Type} : A ~> B -> A ≃ B.
+Proof. Admitted.
