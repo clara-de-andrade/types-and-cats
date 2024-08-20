@@ -45,7 +45,8 @@ Definition sym {A : Type} (a b : A) (p : a ~> b) : b ~> a :=
   | ref x => ref x
   end.
 Notation "p ^-1" :=
-  (sym _ _ p).
+  (sym _ _ p)
+  : core_scope.
 Instance Id_symmetric (A : Type) : Symmetric (@Id A).
 Proof.
   exact sym.
