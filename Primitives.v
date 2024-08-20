@@ -50,6 +50,7 @@ Notation "'∑' x .. y , P" :=
 Notation "A × B" :=
   (∑ (_ : A), B)
   : type_scope.
+
 Notation "A ∧ B" :=
   (A × B)
   : type_scope.
@@ -81,6 +82,7 @@ Inductive Unit : Type :=
 Inductive Nat : Type :=
 | O : Nat
 | S (n : Nat) : Nat.
+
 Notation "'ℕ'" := Nat
   : type_scope.
 

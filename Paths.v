@@ -17,6 +17,7 @@ Definition ap {A B : Type} {a b : A}
   | ref x => ref (f x)
   end.
 
+
 Definition transport
   {A : Type} (P : A -> Type)
   {a b : A} (p : a ~> b)
@@ -24,8 +25,10 @@ Definition transport
   match p with
   | ref x => id
   end.
+
 Notation "p *" := (transport _ p)
   (at level 3).
+
 
 Definition apd {A : Type} {P : A -> Type}
   (f : Π (x : A), P x) {a b : A} (p : a ~> b)
@@ -40,13 +43,16 @@ Example apd_ref {A : Type} {a b : A} (p : a ~> b)
   apd ref p.
 
 
-Definition sym {A : Type} (a b : A) (p : a ~> b) : b ~> a :=
-  match p with
-  | ref x => ref x
-  end.
+Definition sym {A : Type} (a b : A) (p : a ~> b) : b ~> a.
+Proof.
+  induction p.
+  reflexivity.
+Defined.
+
 Notation "p ^-1" :=
   (sym _ _ p)
   : core_scope.
+
 Instance Id_symmetric (A : Type) : Symmetric (@Id A).
 Proof.
   exact sym.
@@ -63,6 +69,23 @@ Example ap_sym {A : Type} {a b : A} (p q : a ~> b)
   ap (fun p => p^-1).
 
 
+Definition tr {A : Type} (a b c : A)
+  (p : a ~> b) (q : b ~> c) : a ~> c.
+Proof.
+  induction p, q.
+  reflexivity.
+Defined.
+
+Notation "p • q" :=
+  (tr _ _ _ p q)
+  : core_scope.
+  
+Instance Id_transitive (A : Type) : Transitive (@Id A).
+Proof.
+  exact tr.
+Defined.
+
+
 Example eucl_l {A : Type} {a b : A} (p : a ~> b)
   : forall c : A, c ~> a -> c ~> b :=
   fun c => transport (fun x => c ~> x) p.
@@ -70,18 +93,6 @@ Example eucl_l {A : Type} {a b : A} (p : a ~> b)
 Example eucl_r {A : Type} {a b : A} (p : a ~> b)
   : forall c : A, a ~> c -> b ~> c :=
   fun c => transport (fun x => x ~> c) p.
-
-
-Definition tr {A : Type} (a b c : A)
-  (p : a ~> b) (q : b ~> c) : a ~> c :=
-  transport (fun x => x ~> c) p^-1 q.
-Notation "p • q" :=
-  (tr _ _ _ p q)
-  : core_scope.
-Instance Id_transitive (A : Type) : Transitive (@Id A).
-Proof.
-  exact tr.
-Defined.
 
 
 Example tr_ref {A : Type} {x : A} : (ref x • ref x) = ref x.
