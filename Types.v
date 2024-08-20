@@ -78,7 +78,7 @@ Example Nat_rect_ex :
   forall {P : ℕ -> Type}
          (a : P 0) (h : Π (n : ℕ), (P n -> P (S n))),
   exists (f : Π (n : ℕ), P n),
-  (and (f 0 = a) (forall (n : ℕ), f (S n) = h n (f n))).
+  (f 0 = a) ∧ (forall (n : ℕ), f (S n) = h n (f n)).
 Proof.
   intros.
   exists (Nat_rect P a h).

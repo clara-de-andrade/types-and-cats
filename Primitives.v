@@ -50,6 +50,9 @@ Notation "'∑' x .. y , P" :=
 Notation "A × B" :=
   (∑ (_ : A), B)
   : type_scope.
+Notation "A ∧ B" :=
+  (A × B)
+  : type_scope.
 
 Notation "( x , y , .. , z )" :=
   (pair .. (pair x y) .. z).

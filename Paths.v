@@ -46,8 +46,6 @@ Definition sym {A : Type} (a b : A) (p : a ~> b) : b ~> a :=
   end.
 Notation "p ^-1" :=
   (sym _ _ p).
-
-
 Instance Id_symmetric (A : Type) : Symmetric (@Id A).
 Proof.
   exact sym.
@@ -79,8 +77,6 @@ Definition tr {A : Type} (a b c : A)
 Notation "p • q" :=
   (tr _ _ _ p q)
   : core_scope.
-
-
 Instance Id_transitive (A : Type) : Transitive (@Id A).
 Proof.
   exact tr.
@@ -131,6 +127,14 @@ Lemma ref_unit_r {A : Type} {a b : A} (p : a ~> b)
 Proof.
   induction p.
   reflexivity.
+Qed.
+
+Lemma ref_unit {A : Type} {a b : A} (p : a ~> b)
+  : and (ref a • p ~> p) (p • ref b ~> p).
+Proof.
+  split.
+  - apply ref_unit_l.
+  - apply ref_unit_r.
 Qed.
 
 Lemma tr_assoc {A : Type} {a b c d : A}
