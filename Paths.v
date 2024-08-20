@@ -1,8 +1,8 @@
 From HoTT Require Import Basics.
 From TypesAndCats Require Import Primitives Types.
 
-(** TODO: document *)
 
+(** TODO: document *)
 
 Instance Id_reflexive (A : Type) : Reflexive (@Id A).
 Proof.
