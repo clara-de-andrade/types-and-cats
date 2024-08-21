@@ -8,7 +8,7 @@ COQCFLAGS := $(foreach FLAG, $(COQCFLAGS), -arg $(FLAG))
 COQMFFLAGS := -Q . TypesAndCats
 COQDOCFLAGS := --utf8
 
-ALLVFILES := Primitives.v Types.v Paths.v Contractibles.v
+ALLVFILES := Primitives.v Types.v Paths.v Equivalences.v
 
 build:
 	$(MAKE) -f Makefile.coq

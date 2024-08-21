@@ -92,35 +92,35 @@ Proof.
 Qed.
 
 
-Definition logeqv (A B : Type) : Type
+Definition leqv (A B : Type) : Type
   := (A -> B) × (B -> A).
-Infix "<->" := logeqv
+Infix "<->" := leqv
   : type_scope.
 
 
-Example logeqv_ref (A : Type) : A <-> A := (id, id).
+Example leqv_ref (A : Type) : A <-> A := (id, id).
 
-Instance logeqv_reflexive : Reflexive logeqv.
+Instance leqv_reflexive : Reflexive leqv.
 Proof.
-  exact logeqv_ref.
+  exact leqv_ref.
 Defined.
 
 
-Example logeqv_sym (A B : Type) : (A <-> B) -> (B <-> A) :=
+Example leqv_sym (A B : Type) : (A <-> B) -> (B <-> A) :=
   fun e => match e with  (f, g) => (g, f) end.
 
-Instance logeqv_symmetric : Symmetric logeqv.
+Instance leqv_symmetric : Symmetric leqv.
 Proof.
-  exact logeqv_sym.
+  exact leqv_sym.
 Defined.
 
 
-Example logeqv_tr (A B C : Type) : (A <-> B) -> (B <-> C) -> (A <-> C) :=
+Example leqv_tr (A B C : Type) : (A <-> B) -> (B <-> C) -> (A <-> C) :=
   fun e1 e2 => match e1, e2 with (f, f'), (g, g') => (g ∘ f, f' ∘ g') end.
   
-Instance logeqv_transitive : Transitive logeqv.
+Instance leqv_transitive : Transitive leqv.
 Proof.
-  exact logeqv_tr.
+  exact leqv_tr.
 Defined.
   
 
@@ -236,68 +236,68 @@ Proof.
   - apply isequiv_to_qinv.
 Defined.
 
-Declare Scope homeqv_scope.
-Open Scope homeqv_scope.
+Declare Scope heqv_scope.
+Open Scope heqv_scope.
 
-Definition homeqv (A B : Type) : Type :=
+Definition heqv (A B : Type) : Type :=
   ∑ (f : A -> B), isequiv f.
-Infix "≃" := homeqv
+Infix "≃" := heqv
   : type_scope.
 
-Definition homeqv_fun {A B : Type} (f : A ≃ B) := (fst f).
-Notation "f *" := (homeqv_fun f)
+Definition heqv_fun {A B : Type} (f : A ≃ B) := (fst f).
+Notation "f *" := (heqv_fun f)
   (at level 3)
-  : homeqv_scope.
+  : heqv_scope.
 
 
-Example homeqv_ref (A : Type) : A ≃ A.
+Example heqv_ref (A : Type) : A ≃ A.
 Proof.
   exists id.
   apply qinv_to_isequiv.
   refine (id, (ref, ref)).
 Defined.
 
-Notation "'id'" := (homeqv_ref)
-  : homeqv_scope.
+Notation "'id'" := (heqv_ref)
+  : heqv_scope.
 
-Instance homeqv_reflexive
-  : Reflexive homeqv.
+Instance heqv_reflexive
+  : Reflexive heqv.
 Proof.
-  exact homeqv_ref.
+  exact heqv_ref.
 Defined.
 
 
-Example homeqv_sym (A B : Type) : A ≃ B -> B ≃ A.
+Example heqv_sym (A B : Type) : A ≃ B -> B ≃ A.
 Proof.
   intros e.
   destruct e as [f p].
   apply isequiv_to_qinv in p.
 
-  unfold homeqv.
+  unfold heqv.
   exists (fst p).
   apply qinv_to_isequiv.
 
   apply qinv_qinv.
 Defined.
 
-Notation "f ^-1" := (homeqv_sym _ _ f)
+Notation "f ^-1" := (heqv_sym _ _ f)
   (at level 3)
-  : homeqv_scope.
+  : heqv_scope.
 
-Instance homeqv_symmetric
-  : Symmetric homeqv.
+Instance heqv_symmetric
+  : Symmetric heqv.
 Proof.
-  exact homeqv_sym.
+  exact heqv_sym.
 Defined.
 
 
-Example homeqv_tr (A B C : Type) : A ≃ B -> B ≃ C -> A ≃ C.
+Example heqv_tr (A B C : Type) : A ≃ B -> B ≃ C -> A ≃ C.
 Proof.
   intros f g.
   destruct f as [f p1].
   destruct g as [g p2].
 
-  unfold homeqv.
+  unfold heqv.
   exists (g ∘ f).
   apply qinv_to_isequiv.
 
@@ -308,13 +308,13 @@ Proof.
     exact p2.
 Defined.
 
-Notation "g ∘ f" := (homeqv_tr _ _ _ f g)
-  : homeqv_scope.
+Notation "g ∘ f" := (heqv_tr _ _ _ f g)
+  : heqv_scope.
 
-Instance homeqv_transitive
-  : Transitive homeqv.
+Instance heqv_transitive
+  : Transitive heqv.
 Proof.
-  exact homeqv_tr.
+  exact heqv_tr.
 Defined.
 
 
@@ -326,35 +326,35 @@ Proof.
 Defined.
 
 Example idtoeqv_ref {A : Type}
-  : idtoeqv (ref A) = homeqv_ref A.
+  : idtoeqv (ref A) = heqv_ref A.
 Proof.
   simpl.
   reflexivity.
 Qed.
 
 Example idtoeqv_sym {A B : Type} (p : A ~> B)
-  : idtoeqv (p^-1) ~> homeqv_sym _ _ (idtoeqv p).
+  : idtoeqv (p^-1) ~> heqv_sym _ _ (idtoeqv p).
 Proof.
   induction p as [X].
   rewrite -> sym_ref.
   rewrite -> idtoeqv_ref.
   
-  assert (Lm : homeqv_sym X X (homeqv_ref X) = homeqv_ref X).
+  assert (Lm : heqv_sym X X (heqv_ref X) = heqv_ref X).
 Qed.
 
 
 Theorem ax_univalence {A B : Type} : isequiv (@idtoeqv A B).
 Proof. Admitted.
 
-Corollary Id_homeqv_homeqv {A B : Type} : (A ~> B) ≃ (A ≃ B).
+Corollary Id_heqv_heqv {A B : Type} : (A ~> B) ≃ (A ≃ B).
 Proof.
   exists idtoeqv.
   apply ax_univalence.
 Qed.
 
 
-Open Scope homeqv_scope.
+Open Scope heqv_scope.
 Definition ua {A B : Type} : (A ≃ B) ≃ (A ~> B) :=
-  Id_homeqv_homeqv^-1.
+  Id_heqv_heqv^-1.
 
 *)
