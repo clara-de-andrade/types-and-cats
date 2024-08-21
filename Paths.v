@@ -136,7 +136,7 @@ Proof.
   apply (ap (fun q => p • q) H).
 Qed.
 
-Lemma ap_tr {A : Type} {a b c : A}
+Lemma ap_tr_lr{A : Type} {a b c : A}
   (p p' : a ~> b) (q q' : b ~> c)
   : p ~> p' -> q ~> q' -> p • q ~> p' • q.
 Proof.
