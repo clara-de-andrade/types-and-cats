@@ -81,12 +81,14 @@ Definition homotopy_comp_r {A B C : Type}
 
 (* TODO: unfold proof *)
 Theorem homotopy_naturality {A B : Type}
-  (f g : A -> B) (eta : f ~ g)
+  (f g : A -> B) (alph : f ~ g)
   {a b : A} (p : a ~> b)
-  : (eta a) • (ap g p) ~> (ap f p) • (eta b).
+  : (alph a) • (ap g p) ~> (ap f p) • (alph b).
 Proof.
-  induction p. simpl.
-  apply ref_unit.
+  induction p. unfold ap.
+  apply eucl_l with (alph a).
+  - apply ref_unit_r.
+  - apply ref_unit_l.
 Qed.
 
 
@@ -120,17 +122,11 @@ Instance logeqv_transitive : Transitive logeqv.
 Proof.
   exact logeqv_tr.
 Defined.
+  
 
-
+(* TODO: do something with this
 Definition qinv {A B : Type} (f : A -> B) : Type
   := ∑ (g : B -> A), ((g ∘ f ~ id) × (f ∘ g ~ id)).
-
-Definition qinv_to_op {A B : Type} (f : A -> B) : qinv f -> B -> A :=
-  fun e => fst e.
-Notation "f \'" := (qinv_to_op f _)
-  (at level 3)
-  : core_scope.
-
 
 Example qinv_id {A : Type} : qinv (@id A).
 Proof.
@@ -139,6 +135,7 @@ Proof.
   - reflexivity.
   - reflexivity.
 Defined.
+
 
 Example qinv_qinv {A B : Type} (f : A -> B)
   (e : qinv f) : qinv (fst e).
@@ -149,6 +146,12 @@ Proof.
   - exact beta.
   - exact alph.
 Defined.
+
+Lemma qinv_qinv_id {A : Type}
+  : @qinv_qinv A A id qinv_id = qinv_id.
+Proof.
+  simpl. reflexivity.
+Qed.
 
 Example qinv_comp {A B C : Type} (f : A -> B) (g : B -> C)
   : qinv f -> qinv g -> qinv (g ∘ f).
@@ -183,6 +186,12 @@ Proof.
       exact eta.
     + exact delt.
 Defined.
+
+
+Lemma qinv_qinv_comp {A B C : Type} (f : A -> B) (g : B -> C)
+  (e1 : qinv f) (e2 : qinv g)
+  : qinv_qinv (g ∘ f) (qinv_comp f g e1 e2)
+  = (qinv_comp (fst e2) (fst e1) (qinv_qinv g e2) (qinv_qinv f e1)). 
 
 
 Definition isequiv {A B : Type} (f : A -> B) : Type
@@ -227,19 +236,29 @@ Proof.
   - apply isequiv_to_qinv.
 Defined.
 
+Declare Scope homeqv_scope.
+Open Scope homeqv_scope.
 
 Definition homeqv (A B : Type) : Type :=
   ∑ (f : A -> B), isequiv f.
 Infix "≃" := homeqv
   : type_scope.
 
+Definition homeqv_fun {A B : Type} (f : A ≃ B) := (fst f).
+Notation "f *" := (homeqv_fun f)
+  (at level 3)
+  : homeqv_scope.
+
 
 Example homeqv_ref (A : Type) : A ≃ A.
 Proof.
   exists id.
   apply qinv_to_isequiv.
-  exact qinv_id.
+  refine (id, (ref, ref)).
 Defined.
+
+Notation "'id'" := (homeqv_ref)
+  : homeqv_scope.
 
 Instance homeqv_reflexive
   : Reflexive homeqv.
@@ -261,6 +280,10 @@ Proof.
   apply qinv_qinv.
 Defined.
 
+Notation "f ^-1" := (homeqv_sym _ _ f)
+  (at level 3)
+  : homeqv_scope.
+
 Instance homeqv_symmetric
   : Symmetric homeqv.
 Proof.
@@ -270,9 +293,9 @@ Defined.
 
 Example homeqv_tr (A B C : Type) : A ≃ B -> B ≃ C -> A ≃ C.
 Proof.
-  intros e1 e2.
-  destruct e1 as [f p1].
-  destruct e2 as [g p2].
+  intros f g.
+  destruct f as [f p1].
+  destruct g as [g p2].
 
   unfold homeqv.
   exists (g ∘ f).
@@ -285,6 +308,9 @@ Proof.
     exact p2.
 Defined.
 
+Notation "g ∘ f" := (homeqv_tr _ _ _ f g)
+  : homeqv_scope.
+
 Instance homeqv_transitive
   : Transitive homeqv.
 Proof.
@@ -293,4 +319,42 @@ Defined.
 
 
 Definition idtoeqv {A B : Type} : A ~> B -> A ≃ B.
+Proof.
+  intro p.
+  induction p as [X].
+  reflexivity.
+Defined.
+
+Example idtoeqv_ref {A : Type}
+  : idtoeqv (ref A) = homeqv_ref A.
+Proof.
+  simpl.
+  reflexivity.
+Qed.
+
+Example idtoeqv_sym {A B : Type} (p : A ~> B)
+  : idtoeqv (p^-1) ~> homeqv_sym _ _ (idtoeqv p).
+Proof.
+  induction p as [X].
+  rewrite -> sym_ref.
+  rewrite -> idtoeqv_ref.
+  
+  assert (Lm : homeqv_sym X X (homeqv_ref X) = homeqv_ref X).
+Qed.
+
+
+Theorem ax_univalence {A B : Type} : isequiv (@idtoeqv A B).
 Proof. Admitted.
+
+Corollary Id_homeqv_homeqv {A B : Type} : (A ~> B) ≃ (A ≃ B).
+Proof.
+  exists idtoeqv.
+  apply ax_univalence.
+Qed.
+
+
+Open Scope homeqv_scope.
+Definition ua {A B : Type} : (A ≃ B) ≃ (A ~> B) :=
+  Id_homeqv_homeqv^-1.
+
+*)
