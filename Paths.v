@@ -18,7 +18,7 @@ Definition ap {A B : Type} (f : A -> B)
   end.
 
 Lemma ap_ref {A B : Type} (f : A -> B) {a : A}
-  : ap f (ref a) = ref (f a).
+  : ap f (ref a) ~> ref (f a).
 Proof.
   simpl. reflexivity.
 Qed.
@@ -36,7 +36,7 @@ Notation "p *" := (transport _ p)
   (at level 3).
 
 Lemma transport_ref {A : Type} (P : A -> Type) {a : A} (u : P a)
-  : (transport P (ref a) u) = u.
+  : (transport P (ref a) u) ~> u.
 Proof.
   simpl. reflexivity.
 Qed.
@@ -71,7 +71,7 @@ Proof.
 Defined.
 
 
-Example sym_ref {A : Type} {x : A} : (ref x)^-1 = ref x.
+Example sym_ref {A : Type} {x : A} : (ref x)^-1 ~> ref x.
 Proof.
   simpl. reflexivity.
 Qed.
@@ -113,7 +113,7 @@ Proof.
 Qed.
 
 
-Example tr_ref {A : Type} {x : A} : (ref x • ref x) = ref x.
+Example tr_ref {A : Type} {x : A} : (ref x • ref x) ~> ref x.
 Proof.
   intros. unfold tr.
   simpl. reflexivity.
@@ -257,6 +257,8 @@ Qed.
 (* TODO: sym_canc_l, sym_canc_r, unit_uniq *)
 
 
+(* TODO: learn how to replace hpotheses (q := q' below) in proofs *)
+
 Theorem Sigma_path_ind {A : Type} {P : A -> Type} (w w' : ∑ (x : A), P x)
   : ∑ (p : (fst w) ~> (fst w')), (p* (snd w) ~> (snd w')) -> w ~> w'.
 Proof.
@@ -267,10 +269,15 @@ Proof.
   intros r.
   destruct r as [p q].
 
-  induction p as [a].  
-  rewrite -> transport_ref in q.
+  induction p as [a].
+  assert (q' : u ~> v).
+  {
+    apply eucl_r with (a := (ref a)* u) (b := u) (c := v).
+    - apply transport_ref.
+    - apply q. 
+  }
 
-  induction q as [u].
+  induction q' as [u].
   reflexivity.
 Qed.
 
