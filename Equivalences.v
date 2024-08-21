@@ -105,7 +105,7 @@ Proof.
   unfold comp.
   unfold id.
   reflexivity.
-Qed.
+Defined.
 
 (* [id] is a left unit wrt map composition *)
 Lemma id_unit_l {A B : Type} (f : A -> B) : id ∘ f ~ f.
@@ -116,7 +116,7 @@ Proof.
   unfold comp.
   unfold id.
   reflexivity.
-Qed.
+Defined.
 
 
 (* composition [id ∘ id] is equal to map [id] *)
@@ -128,7 +128,7 @@ Proof.
   unfold comp.
   unfold id.
   reflexivity.
-Qed.
+Defined.
 
 (* [id] is unique as right unit wrt map composition *)
 Lemma id_unit_r_uniq (u : Π (X : Type), (X -> X))
@@ -185,7 +185,7 @@ Proof.
 Defined.
 
 
-(* inverse of logical equivalence *)
+(* inverse of a logical equivalence *)
 Example leqv_inv (A B : Type) : (A <-> B) -> (B <-> A) :=
   fun e => match e with  (f, g) => (g, f) end.
 
@@ -283,16 +283,8 @@ Open Scope heqv_scope.
 
 
 (* identity equivalence *)
-Definition heqv_id (A : Type) : A ≃ A.
-Proof.
-  exists id.
-  apply qinv_to_isequiv.
-
-  unfold qinv.
-  exists id. split.
-  - exact id_unit_id.
-  - exact id_unit_id.
-Defined.
+Definition heqv_id (A : Type) : A ≃ A
+  := (id, ((id, ref), (id, ref))).
 
 (* ≃ is reflexive *)
 Instance heqv_ref
@@ -301,18 +293,15 @@ Proof.
   exact heqv_id.
 Defined.
 
-(*  *)
-Example heqv_ref_id {A : Type} : heqv_ref A = (id, ((id, ref), (id, ref))).
-Proof.
-Admitted.
-(*
-  unfold heqv_ref.
-  unfold qinv_to_isequiv.
-  reflexivity.
-*)
+
+(* equal types have equal identities *)
+Definition ap_heqv_id {A B : Type} (p : A ~> B)
+  : transport (fun X => X ≃ X) p (heqv_id A) ~> heqv_id B :=
+  apd heqv_id p. 
 
 
-Lemma heqv_sym (A B : Type) : A ≃ B -> B ≃ A.
+(* inverse of an equivalence *)
+Lemma heqv_inv (A B : Type) : A ≃ B -> B ≃ A.
 Proof.
   intros e.
   destruct e as [f p].
@@ -321,31 +310,58 @@ Proof.
 
   unfold heqv.
   exists f'.
+  apply qinv_to_isequiv.
 
-  unfold isequiv.
-  refine ((f, beta), (f, alph)).
+  unfold qinv.
+  exists f. refine (beta, alph).
 Defined.
 
-Notation "f ^-1" := (heqv_sym _ _ f)
+Notation "f ^-1" := (heqv_inv _ _ f)
   (at level 3)
   : heqv_scope.
 
-Instance heqv_symmetric
+(* ≃ is symmetric *)
+Instance heqv_sym
   : Symmetric heqv.
 Proof.
-  exact heqv_sym.
+  exact heqv_inv.
 Defined.
 
-Example heqv_sym_id {A : Type} : (heqv_ref A)^-1 = heqv_ref A.
-Proof.
-(*
-  unfold heqv_ref.
-  unfold qinv_to_isequiv.
 
-  unfold heqv_sym.
+(* equal equivalences have equal inverses *)
+Definition ap_heqv_inv {A B : Type} (f g : A ≃ B)
+  : (f ~> g) -> (f^-1 ~> g^-1) :=
+  ap (fun f => f^-1).
+
+
+(* inverse of identity equivalence is equal to itself *)
+Example heqv_inv_id {A : Type} : (heqv_id A)^-1 ~> heqv_id A.
+Proof.
+  unfold heqv_id.
+  unfold heqv_inv.
   unfold isequiv_to_qinv.
 
-  unfold homotopy_tr.
-  unfold homotopy_comp_l.
-*)
+  unfold hom_tr.
+  unfold hom_comp.
+
+  simpl. reflexivity.
+Defined.
+
+
+Lemma heqv_comp (A B C : Type) : A ≃ B -> B ≃ C -> A ≃ C.
+Proof.
+  intros e1 e2.
+  destruct e1 as [f p1].
+  destruct e2 as [g p2].
+  apply isequiv_to_qinv in p1.
+  apply isequiv_to_qinv in p2.
+  destruct p1 as [f' [alph1 beta1]].
+  destruct p2 as [g' [alph2 beta2]].
+
+  unfold heqv.
+  exists (g ∘ f).
+  apply qinv_to_isequiv.
+
+  unfold qinv.
+  exists (f' ∘ g'). split.
 Admitted.
