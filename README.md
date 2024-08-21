@@ -18,3 +18,7 @@ The present text is still a work in progress, and it and its source code are bot
 --->
 - [ ] write an appendix on how to install Coq and view the repository on an IDE (VS Code, preferably)
 - [ ] translate the notes to English
+
+- to learn about Coq:
+  + [ ] scopes
+  + [ ] tactics
