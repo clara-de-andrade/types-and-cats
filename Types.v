@@ -14,61 +14,11 @@ Notation "g ∘ f" :=
   : core_scope.
 
 
-(* map composition is associative *)
-(* TODO: unfold proof *)
-Lemma comp_assoc {A B C D : Type}
-  (f : A -> B) (g : B -> C) (h : C -> D)
-  : (h ∘ (g ∘ f)) = ((h ∘ g) ∘ f).
-Proof.
-  reflexivity.
-Qed.
-
-
 (* identity map *)
 Definition id (A : Type) : A -> A := fun x => x.
 
 (* type paramater is inferred from context *)
 Arguments id {A}.
-
-
-(* [id] is a right unit wrt map composition *)
-(* TODO: unfold proof *)
-Lemma id_unit_r {A B : Type} (f : A -> B) : (f ∘ id) = f.
-Proof.
-  reflexivity.
-Qed.
-
-(* [id] is a left unit wrt map composition *)
-(* TODO: unfold proof *)
-Lemma id_unit_l {A B : Type} (f : A -> B) : (id ∘ f) = f.
-Proof.
-  reflexivity.
-Qed.
-
-
-(* composition [id ∘ id] is equal to map [id] *)
-Lemma id_unit_id {A : Type} : @id A ∘ @id A = @id A.
-Proof.
-  reflexivity.
-Qed.
-
-(* [id] is unique as right unit wrt map composition *)
-Lemma id_unit_r_uniq (u : Π (X : Type), (X -> X)) {X : Type}
-  : (forall (A B : Type) (f : A -> B), f ∘ u A = f) -> u X = id.
-Proof.
-  intros H.
-  rewrite <- (id_unit_l (u X)).
-  apply H.
-Qed.
-
-(* [id] is unique as left unit wrt map composition *)
-Lemma id_unit_l_uniq (u : Π (X : Type), (X -> X)) {X : Type}
-  : (forall (A B : Type) (f : A -> B), u B ∘ f = f) -> u X = id.
-Proof.
-  intros H.
-  rewrite <- (id_unit_r (u X)).
-  apply H.
-Qed.
 
 
 (* projection maps from Sigma types *)
