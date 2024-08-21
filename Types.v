@@ -3,44 +3,75 @@ From TypesAndCats Require Import Primitives.
 
 (** TODO: document *)
 
-(* TODO: explain *)
 
-Definition comp {A B C : Type} (f : A -> B) (g : B -> C) (x : A) : C :=
-  g (f x).
+(* map composition *)
+Definition comp (A B C : Type) (f : A -> B) (g : B -> C) : A -> C :=
+  fun x => g (f x).
 
+(* standard notation *)
 Notation "g ∘ f" :=
-  (comp f g)
+  (comp _ _ _ f g)
   : core_scope.
 
+
+(* map composition is associative *)
+(* TODO: unfold proof *)
 Lemma comp_assoc {A B C D : Type}
   (f : A -> B) (g : B -> C) (h : C -> D)
   : (h ∘ (g ∘ f)) = ((h ∘ g) ∘ f).
 Proof.
-  intros. reflexivity.
+  reflexivity.
 Qed.
 
 
-(* TODO: explain *)
+(* identity map *)
+Definition id (A : Type) : A -> A := fun x => x.
 
-Definition id {A : Type} (x : A) :A :=
-  x.
+(* type paramater is inferred from context *)
+Arguments id {A}.
 
+
+(* [id] is a right unit wrt map composition *)
+(* TODO: unfold proof *)
 Lemma id_unit_r {A B : Type} (f : A -> B) : (f ∘ id) = f.
 Proof.
-  intros. reflexivity.
+  reflexivity.
 Qed.
 
+(* [id] is a left unit wrt map composition *)
+(* TODO: unfold proof *)
 Lemma id_unit_l {A B : Type} (f : A -> B) : (id ∘ f) = f.
 Proof.
-  intros. reflexivity.
+  reflexivity.
 Qed.
 
 
-(** Dizemos que [fst] é a primeira projeção, e que [snd] é a segunda projeção,
-    do tipo [∑ (x : A), P x]. Ou seja, se [p : ∑ (x : A), P x] é um par, então
-    [fst p : A] e [snd p : P (fst p)]. Em particular, se [p : A × B], então
-    [fst p : A] e [snd p : B]. Portanto, [fst] e [snd] "extraem" ambos os
-    componentes de um par. *)
+(* composition [id ∘ id] is equal to map [id] *)
+Lemma id_unit_id {A : Type} : @id A ∘ @id A = @id A.
+Proof.
+  reflexivity.
+Qed.
+
+(* [id] is unique as right unit wrt map composition *)
+Lemma id_unit_r_uniq (u : Π (X : Type), (X -> X)) {X : Type}
+  : (forall (A B : Type) (f : A -> B), f ∘ u A = f) -> u X = id.
+Proof.
+  intros H.
+  rewrite <- (id_unit_l (u X)).
+  apply H.
+Qed.
+
+(* [id] is unique as left unit wrt map composition *)
+Lemma id_unit_l_uniq (u : Π (X : Type), (X -> X)) {X : Type}
+  : (forall (A B : Type) (f : A -> B), u B ∘ f = f) -> u X = id.
+Proof.
+  intros H.
+  rewrite <- (id_unit_r (u X)).
+  apply H.
+Qed.
+
+
+(* projection maps from Sigma types *)
 
 Definition fst {A : Type} {P : A -> Type}
   (p : ∑ (x : A), P x) : A :=
@@ -55,9 +86,7 @@ Definition snd {A : Type} {P : A -> Type}
   end.
 
 
-(** Note que, pela definição indutiva de [Unit], existe um termo [Unit_rect]
-    onde, para todo [P : Unit -> Type], se [p : P tt], então existe um mapa
-    [f : Π (x : Unit), P x] tal que [f tt = p], onde [f = Unit_rect P p]. *)
+(* induction for Unit type *)
 
 Example Unit_rect_ex :
   forall {P : Unit -> Type} (p : P tt),
@@ -69,10 +98,7 @@ Proof.
 Qed.
 
 
-(** Novamente, pela definição indutiva de [ℕ], existe um termo [Nat_rect] onde,
-    para todo [P : ℕ -> Type], se [a : P 0] e [h : Π (n : ℕ), (P n -> P (S n))]
-    então existe um mapa [f : Π (n : ℕ), P n] tal que [f 0 = a] e, se [n : ℕ],
-    então [f (S n) = h n (f n)], onde [f = Nat_rect P a h]. *)
+(* induction for Nat type *)
 
 Example Nat_rect_ex :
   forall {P : ℕ -> Type}
@@ -88,7 +114,7 @@ Proof.
 Qed.
 
 
-(* TODO: explain *)
+(* induction for Id type *)
 
 Example Id_rect_ex :
   forall {A : Type} {P : Π (x y : A) (p : x ~> y), Type}
