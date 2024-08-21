@@ -10,12 +10,18 @@ Proof.
 Defined.
 
 
-Definition ap {A B : Type} {a b : A}
-  (f : A -> B) (p : a ~> b)
+Definition ap {A B : Type} (f : A -> B)
+  {a b : A} (p : a ~> b)
   : (f a) ~> (f b) :=
   match p with
   | ref x => ref (f x)
   end.
+
+Lemma ap_ref {A B : Type} (f : A -> B) {a : A}
+  : ap f (ref a) = ref (f a).
+Proof.
+  simpl. reflexivity.
+Qed.
 
 
 Definition transport
@@ -28,6 +34,12 @@ Definition transport
 
 Notation "p *" := (transport _ p)
   (at level 3).
+
+Lemma transport_ref {A : Type} (P : A -> Type) {a : A} (u : P a)
+  : (transport P (ref a) u) = u.
+Proof.
+  simpl. reflexivity.
+Qed.
 
 
 Definition apd {A : Type} {P : A -> Type}
@@ -243,3 +255,28 @@ Proof.
 Qed.
 
 (* TODO: sym_canc_l, sym_canc_r, unit_uniq *)
+
+
+Theorem Sigma_path_ind {A : Type} {P : A -> Type} (w w' : ∑ (x : A), P x)
+  : ∑ (p : (fst w) ~> (fst w')), (p* (snd w) ~> (snd w')) -> w ~> w'.
+Proof.
+  induction w as [a u].
+  induction w' as [b v].
+  simpl.
+
+  intros r.
+  destruct r as [p q].
+
+  induction p as [a].  
+  rewrite -> transport_ref in q.
+
+  induction q as [u].
+  reflexivity.
+Qed.
+
+Definition lift {A : Type} {P : A -> Type} {a b : A}
+  (u : P a) (p : a ~> b) : (a, u) ~> (b, p* u).
+Proof.
+  apply Sigma_path_ind.
+  exists p. simpl. reflexivity.
+Defined.
