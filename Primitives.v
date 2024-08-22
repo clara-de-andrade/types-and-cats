@@ -190,6 +190,7 @@ Notation "g 'o' f" := (g ∘ f)
 **)
 
 Notation arr_const := (fun x _ => x).
+Notation "'const'" := arr_const : map_scope.
 
 Definition arr_compd {A B : Type} {P : B -> Type}
   (f : A -> B) (g : forall x : B, P x)
