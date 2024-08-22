@@ -64,20 +64,20 @@ Proof.
   reflexivity.
 Defined.
 
-Definition concat_p1_1p {A : Type} {x y : A} (p : x = y)
+Definition concat_1p_p1 {A : Type} {x y : A} (p : x = y)
   : 1 @ p = p @ 1.
 Proof.
-  refine (_ @ _^).
+  transitivity.
   - apply concat_1p.
-  - apply concat_p1.
+  - symmetry. apply concat_p1.
 Defined.
 
-Definition concat_1p_p1 {A : Type} {x y : A} (p : x = y)
+Definition concat_p1_1p {A : Type} {x y : A} (p : x = y)
   : p @ 1 = 1 @ p.
 Proof.
-  refine (_ @ _^).
+  transitivity.
   - apply concat_p1.
-  - apply concat_1p.
+  - symmetry. apply concat_1p.
 Defined.
 
 Definition concat_pV {A : Type} {x y : A} (p : x = y)
@@ -136,64 +136,72 @@ Definition moveR_M1 {A : Type} {x y : A} (p q : x = y)
   : 1 = p^ @ q -> p = q.
 Proof.
   induction p. intro h.
-  refine (h @ _).
-  apply concat_1p.
+  transitivity.
+  - exact h.
+  - apply concat_1p.
 Defined.
 
 Definition moveL_M1 {A : Type} {x y : A} (p q : x = y)
   : q^ @ p = 1 -> p = q.
 Proof.
   induction q. intro h.
-  refine (_^ @ h).
-  apply concat_1p.
+  transitivity.
+  - symmetry. apply concat_1p.
+  - exact h.
 Defined.
 
 Definition moveR_1M {A : Type} {x y : A} (p q : x = y)
   : 1 = q @ p^ -> p = q.
 Proof.
   induction p. intro h.
-  refine (h @ _).
-  apply concat_p1.
+  transitivity.
+  - exact h.
+  - apply concat_p1.
 Defined.
 
 Definition moveL_1M {A : Type} {x y : A} (p q : x = y)
   : p @ q^ = 1 -> p = q.
 Proof.
   induction q. intro h.
-  refine (_^ @ h).
-  apply concat_p1.
+  transitivity.
+  - symmetry. apply concat_p1.
+  - exact h.
 Defined.
 
 Definition moveR_V1 {A : Type} {x y : A} (p : x = y) (q : y = x)
   : 1 = p @ q -> p^ = q.
 Proof.
   induction p. intro h.
-  refine (h @ _).
-  apply concat_1p.
+  transitivity.
+  - exact h.
+  - apply concat_1p.
 Defined.
 
 Definition moveL_V1 {A : Type} {x y : A} (p : x = y) (q : y = x)
   : q @ p = 1 -> p = q^.
 Proof.
   induction q. intro h.
-  refine (_^ @ h).
-  apply concat_1p.
+  transitivity.
+  - symmetry. apply concat_1p.
+  - exact h.
 Defined.
 
 Definition moveR_1V {A : Type} {x y : A} (p : x = y) (q : y = x)
   : 1 = q @ p -> p^ = q.
 Proof.
   induction p. intro h.
-  refine (h @ _).
-  apply concat_p1.
+  transitivity.
+  - exact h.
+  - apply concat_p1.
 Defined.
 
 Definition moveL_1V {A : Type} {x y : A} (p : x = y) (q : y = x)
   : p @ q = 1 -> p = q^.
 Proof.
   induction q. intro h.
-  refine (_^ @ h).
-  apply concat_p1.
+  transitivity.
+  - symmetry. apply concat_p1.
+  - exact h.
 Defined.
 
 
@@ -212,9 +220,9 @@ Definition moveL_Mp {A : Type} {x y z : A}
   : q^ @ p = r -> p = q @ r.
 Proof.
   induction q. intro h.
-  refine (_^ @ h @ _^).
-  - apply concat_1p.
-  - apply concat_1p.
+  refine (_ @ h @ _).
+  - symmetry. apply concat_1p.
+  - symmetry. apply concat_1p.
 Defined.
 
 Definition moveR_pM {A : Type} {x y z : A}
@@ -232,9 +240,9 @@ Definition moveL_pM {A : Type} {x y z : A}
   : p @ r^ = q -> p = q @ r.
 Proof.
   induction r. intro h.
-  refine (_^ @ h @ _^).
-  - apply concat_p1.
-  - apply concat_p1.
+  refine (_ @ h @ _).
+  - symmetry. apply concat_p1.
+  - symmetry. apply concat_p1.
 Defined.
 
 
@@ -253,9 +261,9 @@ Definition moveL_Vp {A : Type} {x y z : A}
   : p @ q = r -> q = p^ @ r.
 Proof.
   induction p. intro h.
-  refine (_^ @ h @ _^).
-  - apply concat_1p.
-  - apply concat_1p.
+  refine (_ @ h @ _).
+  - symmetry. apply concat_1p.
+  - symmetry. apply concat_1p.
 Defined.
 
 Definition moveR_pV {A : Type} {x y z : A}
@@ -273,9 +281,9 @@ Definition moveL_pV {A : Type} {x y z : A}
   : p @ q = r -> p = r @ q^.
 Proof.
   induction q. intro h.
-  refine (_^ @ h @ _^).
-  - apply concat_p1.
-  - apply concat_p1.
+  refine (_ @ h @ _).
+  - symmetry. apply concat_p1.
+  - symmetry. apply concat_p1.
 Defined.
 
 
@@ -375,7 +383,6 @@ Proof.
   induction p. simpl. reflexivity.
 Admitted.
 
-
 Definition ap_pp_p {A B : Type} {x y z : A} {w : B}
   (f : A -> B) (p : x = y) (q : y = z) (r : f z = w)
   : (ap f (p @ q)) @ r = (ap f p) @ ((ap f q) @ r).
@@ -392,6 +399,25 @@ Proof.
   exact (concat_p_pp r 1 1).
 Defined.
 
+
+Definition concat_ap {A B : Type} {x y : A}
+  (f g : A -> B) (eta : forall x : A, f x = g x) (p : x = y)
+  : eta x @ (ap g p) = (ap f p) @ eta y.
+Proof.
+  induction p. simpl.
+  apply concat_p1_1p.
+Defined.
+
+Definition concat_apd {A : Type} {P : A -> Type} {x y : A}
+  (f g : forall x : A, P x) (eta : forall x : A, f x = g x) (p : x = y)
+  : (ap (p #) (eta x)) @ (apd g p) = (apd f p) @ (eta y).
+Proof.
+  induction p. simpl.
+
+  transitivity.
+  - apply concat_p1_1p.
+  - apply ap_id.
+Defined.
 
 
 Definition transport_1 {A : Type} (P : A -> Type) (x : A) (u : P x)

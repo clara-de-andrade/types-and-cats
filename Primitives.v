@@ -217,16 +217,18 @@ Notation "g 'oD' f" := (g ∘ f)
 Global Instance iff_id : Reflexive iff :=
   fun A => (id, id).
 
-Global Instance iff_inv : Symmetric iff :=
-  fun A B p => match p with
-  | (f, g) => (g, f)
-  end.
+Global Instance iff_inv : Symmetric iff.
+Proof.
+  intros A B [f g].
+  exact (g, f).
+Defined.
 Arguments iff_inv {A B} p : rename.
 
-Global Instance iff_comp : Transitive iff :=
-  fun A B C p q => match p, q with
-  | (f, f'), (g, g') => (g ∘ f, f' ∘ g')
-  end.
+Global Instance iff_comp : Transitive iff.
+Proof.
+  intros A B C [f f'] [g g'].
+  exact (g o f, f' o g').
+Defined.
 Arguments iff_comp {A B C} p q : rename.
 
 (** Next, we define the inductive type [Sigma P], called the _dependent sum_
@@ -436,15 +438,14 @@ Register Id_rect as core.identity.ind.
 
 (** TODO: document **)
 
+Bind Scope path_scope with Id.
+Local Open Scope path_scope.
+
 
 Global Instance Id_reflexive {A : Type} : Reflexive (@Id A)
   := refl.
 Arguments Id_reflexive / .
   (* ??? *)
-
-
-Bind Scope path_scope with Id.
-Local Open Scope path_scope.
 
 Notation "1" := (refl _%path) : path_scope.
 
@@ -457,7 +458,6 @@ Defined.
 
 Global Instance Id_symmetric {A : Type} : Symmetric (@Id A)
   := @inverse A.
-
 Register inverse as core.identity.sym.
 Arguments inverse {A} {a b} p : simpl nomatch.
   (* ??? *)
@@ -475,7 +475,6 @@ Defined.
 
 Global Instance Id_transitive {A : Type} : Transitive (@Id A)
   := @concat A.
-
 Register concat as core.identity.trans.
 Arguments concat {A} {a b c} p q : simpl nomatch.
   (* ??? *)
@@ -525,3 +524,39 @@ Arguments apd {A}%type {P}%map {a b} f%map p%path : simpl nomatch.
   (* ??? *)
 #[export] Hint Resolve refl : core.
   (* ??? *)
+
+
+(** TODO(?): scope for homotopies **)
+
+
+Definition homotopy {A : Type} {P : A -> Type}
+  (f g : forall x : A, P x) : Type := forall x : A, f x = g x.
+
+Notation "f == g" :=
+  (homotopy f%map g%map)
+  ( at level 70,
+    no associativity ) : map_scope.
+
+
+Definition hid {A : Type} {P : A -> Type}
+  (f : forall x : A, P x) : f == f := fun x => refl (f x).
+
+Global Instance homotopy_reflexive {A : Type} {P : A -> Type}
+  : Reflexive (@homotopy A P) := hid.
+Arguments hid {A}%type {P}%map {f}%map : simpl nomatch.
+
+
+Definition hinv {A : Type} {P : A -> Type} {f g : forall x : A, P x}
+  (alph : f == g) : g == f := fun x => (alph x)^.
+
+Global Instance homotopy_symmetric {A : Type} {P : A -> Type}
+  : Symmetric (@homotopy A P) := @hinv A P.
+Arguments hinv {A}%type {P}%map {f g}%map alph%map : simpl nomatch.
+
+
+Definition hcomp {A : Type} {P : A -> Type} {f g h : forall x : A, P x}
+  (alph : f == g) (beta : g == h) : f == h := fun x => (alph x) @ (beta x).
+
+Global Instance homotopy_transitive {A : Type} {P : A -> Type}
+  : Transitive (@homotopy A P) := @hcomp A P.
+Arguments hcomp {A}%type {P}%map {f g h}%map (alph beta)%map : simpl nomatch.
