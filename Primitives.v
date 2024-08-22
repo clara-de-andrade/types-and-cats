@@ -492,6 +492,23 @@ Register ap as core.identity.congr.
 Global Arguments ap {A B}%type f%map {a b} p%path.
 
 
+Definition arr_compd {A B : Type} {P : B -> Type}
+  (f : A -> B) (g : forall x : B, P x)
+  : forall x : A, P (f x) := fun x => g (f x).
+
+Global Arguments arr_compd {A B}%type P%map (f g)%map.
+#[export] Hint Unfold arr_compd : core.
+
+Notation "g '∘D' f" := (arr_compd f g)
+  ( at level 40,
+    right associativity
+  ) : map_scope.
+Notation "g 'oD' f" := (g ∘ f)
+  ( at level 40,
+    right associativity,
+    only parsing ) : map_scope.
+
+
 Definition apd {A : Type} {P : A -> Type}
   (f : forall x : A, P x) {a b : A} (p : a = b)
   : p # (f a) = f b := match p with refl x => refl (f x) end. 
