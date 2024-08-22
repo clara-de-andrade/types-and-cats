@@ -70,32 +70,28 @@ Proof.
 Defined.
 
 
-Definition concat_V_pp {A : Type} {x y z : A}
-  (p : x = y) (q : y = z) :
+Definition concat_V_pp {A : Type} {x y z : A} (p : x = y) (q : y = z) :
   p^ @ (p @ q) = q.
 Proof.
   induction p, q.
   reflexivity.
 Defined.
 
-Definition concat_p_Vp {A : Type} {x y z : A}
-  (p : x = y) (q : x = z) :
+Definition concat_p_Vp {A : Type} {x y z : A} (p : x = y) (q : x = z) :
   p @ (p^ @ q) = q.
 Proof.
   induction p, q.
   reflexivity.
 Defined.
 
-Definition concat_pp_V {A : Type} {x y z : A}
-  (p : x = y) (q : y = z) :
+Definition concat_pp_V {A : Type} {x y z : A} (p : x = y) (q : y = z) :
   (p @ q) @ q^ = p.
 Proof.
   induction p, q.
   reflexivity.
 Defined.
 
-Definition concat_pV_p {A : Type} {x y z : A}
-  (p : x = z) (q : y = z) :
+Definition concat_pV_p {A : Type} {x y z : A} (p : x = z) (q : y = z) :
   (p @ q^) @ q = p.
 Proof.
   induction p, q.
@@ -110,32 +106,28 @@ Proof.
   reflexivity.
 Defined.
 
-Definition inv_pp {A : Type} {x y z : A}
-  (p : x = y) (q : y = z) :
+Definition inv_pp {A : Type} {x y z : A} (p : x = y) (q : y = z) :
   (p @ q)^ = q^ @ p^.
 Proof.
   induction p, q.
   reflexivity.
 Defined.
 
-Definition inv_Vp {A : Type} {x y z : A}
-  (p : x = y) (q : x = z) :
+Definition inv_Vp {A : Type} {x y z : A} (p : x = y) (q : x = z) :
   (p^ @ q)^ = q^ @ p.
 Proof.
   induction p, q.
   reflexivity.
 Defined.
 
-Definition inv_pV {A : Type} {x y z : A}
-  (p : x = z) (q : y = z) :
+Definition inv_pV {A : Type} {x y z : A} (p : x = z) (q : y = z) :
   (p @ q^)^ = q @ p^.
 Proof.
   induction p, q.
   reflexivity.
 Defined.
 
-Definition inv_VV {A : Type} {x y z : A}
-  (p : y = x) (q : z = y) :
+Definition inv_VV {A : Type} {x y z : A} (p : y = x) (q : z = y) :
   (p^ @ q^)^ = q @ p.
 Proof.
   induction p, q.
@@ -289,18 +281,67 @@ Proof.
   apply concat_p1.
 Defined.
 
-(*
-Definition moveR_V1
-Definition moveL_V1
-Definition moveR_1V
-Definition moveL_1V
 
-Definition moveR_transport_p
-Definition moveL_transport_p
-Definition moveR_transport_V
-Definition moveL_transport_V
-Definition moveR_transport_p_V
-Definition moveL_transport_p_V
-Definition moveR_transport_V_V
-Definition moveL_transport_V_V
-*)
+Definition moveR_transport_p {A : Type} (P : A -> Type) {x y : A}
+  (p : x = y) (u : P x) (v : P y) :
+  u = p^ # v -> p # u = v.
+Proof.
+  induction p.
+  simpl. reflexivity.
+Defined.
+
+Definition moveL_transport_p {A : Type} (P : A -> Type) {x y : A}
+  (p : y = x) (u : P x) (v : P y) :
+  p^ # u = v -> u = p # v.
+Proof.
+  induction p.
+  simpl. reflexivity.
+Defined.
+
+Definition moveR_transport_V {A : Type} (P : A -> Type) {x y : A}
+  (p : y = x) (u : P x) (v : P y) :
+  u = p # v -> p^ # u = v.
+Proof.
+  induction p.
+  simpl. reflexivity.
+Defined.
+
+Definition moveL_transport_V {A : Type} (P : A -> Type) {x y : A}
+  (p : x = y) (u : P x) (v : P y) :
+  p # u = v -> u = p^ # v.
+Proof.
+  induction p.
+  simpl. reflexivity.
+Defined.
+
+Definition moveR_transport_p_V {A : Type} (P : A -> Type) {x y : A}
+  (p : x = y) (u : P x) (v : P y) (q : u = p^ # v) :
+  (moveR_transport_p P p u v q)^ = moveL_transport_p P p v u q^.
+Proof.
+  induction p.
+  simpl. reflexivity.
+Defined.
+
+Definition moveL_transport_p_V {A : Type} (P : A -> Type) {x y : A}
+  (p : y = x) (u : P x) (v : P y) (q : p^ # u = v) :
+  (moveL_transport_p P p u v q)^ = moveR_transport_p P p v u q^.
+Proof.
+  induction p.
+  simpl. reflexivity.
+Defined.
+
+Definition moveR_transport_V_V {A : Type} (P : A -> Type) {x y : A}
+  (p : y = x) (u : P x) (v : P y) (q : u = p # v) :
+  (moveR_transport_V P p u v q)^ = moveL_transport_V P p v u q^.
+Proof.
+  induction p.
+  simpl. reflexivity.
+Defined.
+
+Definition moveL_transport_V_V {A : Type} (P : A -> Type) {x y : A}
+  (p : x = y) (u : P x) (v : P y) (q : p # u = v) :
+  (moveL_transport_V P p u v q)^ = moveR_transport_V P p v u q^.
+Proof.
+  induction p.
+  simpl. reflexivity.
+Defined.
