@@ -36,7 +36,7 @@ Notation "A -> B" := (arr A B)
 Notation id := (fun x => x).
 
 Notation map_comp := (fun g f x => g (f x)). 
-Notation "g '∘' f" := (map_comp g%map f%map)
+Notation "g '∘' f" := (map_comp g f)
   ( at level 40,
     right associativity
   ) : map_scope.
@@ -194,11 +194,10 @@ Arguments iff_comp {A B C} p q : rename.
 
 Record Sigma {A : Type} (P : A -> Type) : Type := exist {pr1 : A; pr2 : P pr1}.
 
-Arguments Sigma (A P)%type.
-Arguments exist (A P)%type.
+Arguments Sigma {A}%type P%map.
 Arguments exist {A} P _ _.
 Arguments pr1 {A P} _.
-Arguments pr2 {A P} _.
+Arguments pr2 {A P}%map _.
 
 Scheme Sigma_rect := Induction for Sigma Sort Type.
 Scheme Sigma_rec := Minimality for Sigma Sort Type.
@@ -235,10 +234,44 @@ Notation "( x ; .. ; y ; z )" := (exist x .. (exist y z) ..)
     right associativity
   ) : fib_scope.
 
+(** Similarly, we define the _sum_ type [sum A B] of [A] and [B], as an
+    inductive type, in the usual way. In particular, [sum A B] has as
+    constructors the maps [inl : A -> sum A B] and [inr : B -> sum A B], called
+    _injections_.
+**)
 
-(** We also define both a terminal type [Unit] and a natural numbers type [Nat]
-    as part of our standard set of primitive inductive types. Their definitions
-    are routine and don't bear much explanation. **)
+Inductive sum (A B : Type) : Type :=
+| inl (a : A) : sum A B
+| inr (b : B) : sum A B.
+
+Arguments inl {A B} _ , [A] B _.
+  (* ??? *)
+Arguments inr {A B} _ , A [B] _.
+  (* ??? *)
+
+Scheme sum_ind := Induction for sum Sort Type.
+Definition sum_rec := sum_ind.
+Definition sum_rect := sum_ind.
+
+
+(** As with product types, we have a more idiomatic notation [A + B] for
+    sum types, as well as [A \/ B] for when [A + B] is meant to be interpreted
+    as a disjunction.
+**)
+
+Notation "A + B" := (sum A B)
+  ( at level 50,
+    left associativity ) : type_scope.
+
+Notation "A \/ B" := (A + B)
+  ( at level 85,
+    right associativity,
+    only parsing ) : type_scope.
+
+(** We also define a terminal type [Unit] and an initial type [Empty] as part
+    of our standard set of primitive inductive types. Their definitions are
+    routine and don't bear much explanation.
+**)
 
 Inductive Unit : Type :=
 | tt : Unit.
@@ -247,12 +280,43 @@ Scheme Unit_ind := Induction for Unit Sort Type.
 Scheme Unit_rec := Minimality for Unit Sort Type.
 Definition Unit_rect := Unit_ind.
 
+Register Unit as core.IDProp.type.
+Register Unit as core.True.type.
+Register tt as core.IDProp.idProp.
+Register tt as core.True.I.
+#[export] Hint Resolve tt : core.
+  (* ??? *)
+
+
+Inductive Empty : Type := .
+
+Scheme Empty_ind := Induction for Empty Sort Type.
+Scheme Empty_rec := Minimality for Empty Sort Type.
+Definition Empty_rect := Empty_ind.
+
+Register Empty as core.False.type.
+
+
+(** Note in particular that we can now define the negation [¬ A] of [A] in
+    terms of [->] and [Empty], as follows:
+**)
+
+Definition not (A : Type) : Type := A -> Empty.
+Notation "'¬' A" := (not A)
+  ( at level 35,
+    right associativity
+  ) : type_scope.
+Notation "'¬¬' A" := (¬ ¬A)
+  ( at level 35,
+    right associativity
+  ) : type_scope.
+
+
+(** TODO: document **)
+
 Inductive Nat : Type :=
 | O : Nat
 | S (n : Nat) : Nat.
-
-
-(** TODO: learn and explain (really? come on) **)
 
 Declare Scope nat_scope.
 Delimit Scope nat_scope with nat.
@@ -270,25 +334,51 @@ Notation "5" := (S (S (S (S (S O))))) : nat_scope.
 
 (** Finally, we define the inductive type [Id a b] of _paths_ between terms
     [a : A] and [b : A] of the same type. In particular, for any term [a : A],
-    the constructor [refl a] gives a path of type [Id a a]. Proof-theoretically,
-    [Id a b] is the _equality_ type of [a] and [b], so we may also denote this
-    type by [a = b].
+    the constructor [refl a] gives a path of type [Id a a].
 **)
 
 Inductive Id {A : Type} : A -> A -> Type :=
 | refl (a : A) : Id a a.
-Notation "a = b" :=
-  (Id a b)
-  ( at level 70,
-    no associativity )
-  : type_scope.
 
 Scheme Id_ind := Induction for Id Sort Type.
 Scheme Id_rec := Minimality for Id Sort Type.
 Definition Id_rect := Id_ind.
 
 Arguments Id_ind [A] a P f y p : rename.
+  (* ??? *)
 Arguments Id_rec [A] a P f y p : rename.
+  (* ??? *)
+
+
+(** Proof-theoretically, [Id a b] is the _equality_ type of [a] and [b],
+    so we may also denote this type by [a = b :> A], or simply [a = b] if we
+    can infer [A] from the context. We also denote the negation of [a = b] by
+    [a != b], and call it _unequality_.
+**)
+
+Notation "a = b :> A" :=
+  (@Id A a b)
+  ( at level 70,
+    b at next level,
+    no associativity
+  ) : type_scope.
+Notation "a != b :> A" :=
+  (not (@Id A a b))
+  ( at level 70,
+    b at next level,
+    no associativity
+  ) : type_scope.
+
+Notation "a = b" :=
+  (a = b :> _)
+  ( at level 70,
+    no associativity )
+  : type_scope.
+Notation "a != b" :=
+  (a != b :> _)
+  ( at level 70,
+    no associativity )
+  : type_scope.
 
 (** TODO: learn and explain **)
 
@@ -302,7 +392,9 @@ Register Id_rect as core.identity.ind.
 
 Global Instance Id_reflexive {A : Type} : Reflexive (@Id A)
   := refl.
-Arguments Id_reflexive / . (* ??? *)
+Arguments Id_reflexive / .
+  (* ??? *)
+
 
 Bind Scope path_scope with Id.
 Local Open Scope path_scope.
@@ -320,9 +412,10 @@ Global Instance Id_symmetric {A : Type} : Symmetric (@Id A)
   := @inverse A.
 
 Register inverse as core.identity.sym.
-Arguments inverse {A} {a b} p : simpl nomatch. (* ??? *)
+Arguments inverse {A} {a b} p : simpl nomatch.
+  (* ??? *)
 
-Notation "p ^-1" := (inverse p%path)
+Notation "p ^" := (inverse p%path)
   ( at level 1 ) : path_scope.
 
 
@@ -337,11 +430,33 @@ Global Instance Id_transitive {A : Type} : Transitive (@Id A)
   := @concat A.
 
 Register concat as core.identity.trans.
-Arguments concat {A} {a b c} p q : simpl nomatch. (* ??? *)
+Arguments concat {A} {a b c} p q : simpl nomatch.
+  (* ??? *)
+
 
 Notation "p '•' q" := (concat p%path q%path)
     ( at level 40,
     right associativity ) : path_scope.
+
+
+Definition transport_l {A : Type} (P : A -> Type)
+  {a b : A} (p : a = b) : P a -> P b :=
+  match p with refl x => id end.
+
+Arguments transport_l {A}%type P%map {a b} p%path : simpl nomatch.
+
+Notation transport := transport_l.
+Notation "p *" := (transport _ p%path)
+  ( at level 1,
+    left associativity,
+    only parsing,
+    format "p '*'" ) : path_scope.
+
+Definition transport_r {A : Type} (P : A -> Type)
+  {a b : A} (p : a = b) : P b -> P a :=
+  match p with refl x => id end.
+
+Arguments transport_r {A}%type P%map {a b} p%path : simpl nomatch.
 
 
 Definition ap {A B : Type} (f : A -> B) {a b : A} (p : a = b) : f a = f b :=
@@ -351,23 +466,18 @@ Register ap as core.identity.congr.
 Global Arguments ap {A B}%type f%map {a b} p%path.
 
 
-Definition transport {A : Type} (P : A -> Type)
-  {a b : A} (p : a = b) : P a -> P b :=
-  match p with refl x => id end. 
-
-Arguments transport {A}%type P%map {a b} p%path : simpl nomatch.
-
-Notation "p *" := (transport _ p%path)
-  ( at level 1,
-    left associativity,
-    format "p '*'" ) : path_scope.
-
-
 Definition apd {A : Type} {P : A -> Type}
   (f : forall x : A, P x) {a b : A} (p : a = b) : p*(f a) = f b :=
   match p with refl x => refl (f x) end. 
 
 Arguments apd {A}%type P%map f%map {a b} p%path : simpl nomatch.
+
+
+#[export] Hint Resolve refl inverse : path_hints.
+  (* ??? *)
+#[export] Hint Resolve refl : core.
+  (* ??? *)
+
 
 (*
 Example ap_concat_l {A : Type} {a b c : A}

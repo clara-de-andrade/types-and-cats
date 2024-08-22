@@ -30,7 +30,7 @@ Reserved Notation "x <-> y"
   ( at level 95,
     no associativity ).
 
-Reserved Notation "~ x"
+Reserved Notation "'¬' x"
   ( at level 35,
     right associativity ).
 Reserved Notation "x /\ y"
@@ -47,9 +47,22 @@ Reserved Notation "x * y"
   ( at level 40,
     right associativity ).
 
+Reserved Notation "x = y :> T"
+  ( at level 70,
+    y at next level,
+    no associativity ).
+Reserved Notation "x != y :> T"
+  ( at level 70,
+    y at next level,
+    no associativity ).
+
 Reserved Notation "x = y"
   ( at level 70,
     no associativity ).
+Reserved Notation "x != y"
+  ( at level 70,
+    no associativity ).
+
 Reserved Notation "x = y = z"
   ( at level 70,
     y at next level,
@@ -57,6 +70,7 @@ Reserved Notation "x = y = z"
 
 Reserved Notation "x '^-1'"
   ( at level 1,
+    left associativity,
     format "x '^-1'" ).
 Reserved Notation "x '•' y"
   ( at level 40,
