@@ -140,7 +140,7 @@ Tactic Notation "symmetry" :=
   let proof_term_head := (eval cbn in pre_proof_term_head) in
   refine (proof_term_head y x _); change (R y x).
 
-Tactic Notation "etransitivity" open_constr(y) :=
+Tactic Notation "transitivity" open_constr(y) :=
   let R := match goal with |- ?R ?x ?z => constr:(R) end in
   let x := match goal with |- ?R ?x ?z => constr:(x) end in
   let z := match goal with |- ?R ?x ?z => constr:(z) end in
@@ -148,8 +148,8 @@ Tactic Notation "etransitivity" open_constr(y) :=
   let proof_term_head := (eval cbn in pre_proof_term_head) in
   refine (proof_term_head x y z _ _);
   [ change (R x y) | change (R y z) ].
-Tactic Notation "etransitivity" := etransitivity _.
-Tactic Notation "transitivity" constr(x) := etransitivity x.
+Tactic Notation "transitivity" := transitivity _.
+(* Tactic Notation "transitivity" constr(x) := etransitivity x. *)
 
 
 (** For example, we can prove that [->] is a reflexive and transitive relation,
