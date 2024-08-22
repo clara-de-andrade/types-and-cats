@@ -7,6 +7,37 @@ From TypesAndCats Require Export Primitives.
 Local Open Scope path_scope.
 
 
+Definition inv_1 {A : Type} (x : A)
+  : (refl x)^ = refl x.
+Proof.
+  trivial.
+Defined.
+
+Definition concat_11 {A : Type} (x : A)
+  : refl x @ refl x = refl x.
+Proof.
+  trivial.
+Defined.
+
+Definition transport_1 {A : Type} (P : A -> Type) (x : A) (u : P x)
+  : transport P (refl x) u = u.
+Proof.
+  trivial.
+Defined.
+
+Definition ap_1 {A B : Type} (x : A) (f : A -> B)
+  : ap f (refl x) = refl (f x) :> (f x = f x).
+Proof.
+  trivial.
+Defined.
+
+Definition apd_1 {A : Type} {P : A -> Type} (x : A) (f : forall x : A, P x)
+  : apd f (refl x) = refl (f x) :> (f x = f x).
+Proof.
+  trivial.
+Defined.
+
+
 Definition concat_p1 {A : Type} {x y : A} (p : x = y)
   : p @ 1 = p.
 Proof.
@@ -345,3 +376,4 @@ Proof.
   induction p.
   simpl. reflexivity.
 Defined.
+
