@@ -401,15 +401,50 @@ Defined.
 
 
 Definition concat_ap {A B : Type} {x y : A}
-  (f g : A -> B) (eta : forall x : A, f x = g x) (p : x = y)
+  (f g : A -> B) (eta : f == g) (p : x = y)
   : eta x @ (ap g p) = (ap f p) @ eta y.
 Proof.
   induction p. simpl.
   apply concat_p1_1p.
 Defined.
 
+Definition concat_1p_1 {A : Type} {x : A} (p : x = x) (q : p = 1)
+  : concat_1p p @ q = ap (fun p' => 1 @ p') q.
+Proof.
+  (* rewrite <- (inv_V q) *)
+  assert (h1 : concat_1p p @ q = concat_1p p @ q^^)
+    by (apply ap; symmetry; apply inv_V).
+  assert (h2 : ap (fun p' => 1 @ p') q^^ = ap (fun p' => 1 @ p') q)
+    by (apply ap; apply inv_V).
+  refine (h1 @ _ @ h2). clear h1 h2.
+
+  set (r := q^). clearbody r; clear q.
+  (* [induction r] throws an error. *)
+Admitted.
+
+Definition concat_p1_1 {A : Type} {x : A} (p : x = x) (q : p = 1)
+  : concat_p1 p @ q = ap (fun p' => p' @ 1) q.
+Proof.
+  (* rewrite <- (inv_V q) *)
+  assert (h1 : concat_p1 p @ q = concat_p1 p @ q^^)
+    by (apply ap; symmetry; apply inv_V).
+  assert (h2 : ap (fun p' => p' @ 1) q^^ = ap (fun p' => p' @ 1) q)
+    by (apply ap; apply inv_V).
+  refine (h1 @ _ @ h2). clear h1 h2.
+
+  set (r := q^). clearbody r; clear q.
+  (* [induction r] throws an error. *)
+Admitted.
+
+
+Definition apd_1 {A : Type} {P : A -> Type} (x : A) (f : forall x : A, P x)
+  : apd f (refl x) = refl (f x) :> (f x = f x).
+Proof.
+  trivial.
+Defined.
+
 Definition concat_apd {A : Type} {P : A -> Type} {x y : A}
-  (f g : forall x : A, P x) (eta : forall x : A, f x = g x) (p : x = y)
+  (f g : forall x : A, P x) (eta : f == g) (p : x = y)
   : (ap (p #) (eta x)) @ (apd g p) = (apd f p) @ (eta y).
 Proof.
   induction p. simpl.
@@ -420,16 +455,10 @@ Proof.
 Defined.
 
 
+
 Definition transport_1 {A : Type} (P : A -> Type) (x : A) (u : P x)
-  : transport P (refl x) u = u.
+  : (refl x) # u = u.
 Proof.
   trivial.
 Defined.
-
-Definition apd_1 {A : Type} {P : A -> Type} (x : A) (f : forall x : A, P x)
-  : apd f (refl x) = refl (f x) :> (f x = f x).
-Proof.
-  trivial.
-Defined.
-
 
