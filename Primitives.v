@@ -4,7 +4,7 @@ From TypesAndCats Require Export Settings.
 From TypesAndCats Require Export Notations.
 
 
-(** TODO: learn and explain*)
+(** TODO: learn and explain *)
 
 Local Unset Elimination Schemes.
 
@@ -28,28 +28,13 @@ Notation "A -> B" := (arr A B)
     B at level 200
   ) : type_scope.
 
-(** We also define the _identity_ map [id] of a type and the _composition_ map
-    [g ∘ f : A -> B] of any two maps [f : A -> B], [g : B -> C] as notation, so
-    as to not require unfolding these terms.
-**)
-
-Notation id := (fun x => x).
-
-Notation map_comp := (fun g f x => g (f x)). 
-Notation "g '∘' f" := (map_comp g f)
-  ( at level 40,
-    right associativity
-  ) : map_scope.
-Notation "g 'o' f" := (g ∘ f)
-  ( at level 40,
-    right associativity,
-    only parsing ) : map_scope.
-
+(* begin hide *)
 (** TODO: learn and explain *)
-
+(*
 Definition Compose {A B C : Type} (g : B -> C) (f : A -> B) : A -> C :=
   map_comp g f.
-
+*)
+(* end hide *)
 
 (** We define the inductive type [prod A B], called the _product_ of [A] and
     [B], whose terms [pair a b] are _pairs_ of terms [a : A] and [b : B]. We
@@ -167,9 +152,44 @@ Tactic Notation "etransitivity" := etransitivity _.
 Tactic Notation "transitivity" constr(x) := etransitivity x.
 
 
-(** For example, we can prove that [<->] is a reflexive, symmetric and
-    transitive relation, and so, an instance of the above typeclasses, which
-    allows for using these tactics in proofs involving logical equivalences.
+(** For example, we can prove that [->] is a reflexive and transitive relation,
+    and so, an instance of the [Reflexive] and [Transitive] typeclasses above.
+    Moreover, the proofs of the reflexivity and transitivity of [->] induce the
+    _identity_ map [arr_id A : A -> A] on a type [A] and the _composition_
+    [arr_comp f g : A -> C] of maps [f : A -> B], [g : B -> C], respectively.
+    We also define the more conventional notations [id] and [g o f] for these
+    maps.
+**)
+
+Global Instance arr_id : Reflexive arr.
+Proof.
+  intro A.
+  intro x.
+  exact x.
+Defined.
+Notation id := (arr_id _%type).
+
+Global Instance arr_comp : Transitive arr.
+Proof.
+  intros A B C.
+  intros f g x.
+  exact (g (f x)).
+Defined.
+Arguments arr_comp {A B C} f g : rename.
+
+Notation "g '∘' f" := (arr_comp f g)
+  ( at level 40,
+    right associativity
+  ) : map_scope.
+Notation "g 'o' f" := (g ∘ f)
+  ( at level 40,
+    right associativity,
+    only parsing ) : map_scope.
+
+
+(** Moreover, we can prove that [<->] is a reflexive, symmetric and transitive
+    relation, and so, an instance of the above typeclasses, which allows for
+    using these tactics in proofs involving logical equivalences
 **)
 
 Global Instance iff_id : Reflexive iff :=
@@ -186,7 +206,6 @@ Global Instance iff_comp : Transitive iff :=
   | (f, f'), (g, g') => (g ∘ f, f' ∘ g')
   end.
 Arguments iff_comp {A B C} p q : rename.
-
 
 (** Next, we define the inductive type [Sigma P], called the _dependent sum_
     of a family [P] over a type [A]. Similarly to [prod], its terms [exist a b]
