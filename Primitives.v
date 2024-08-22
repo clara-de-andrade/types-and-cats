@@ -468,10 +468,10 @@ Notation "p '@' q" := (concat p%path q%path)
     only parsing ) : path_scope.
 
 
-Definition transport_l {A : Type} (P : A -> Type) {a b : A} (p : a = b)
+Definition transport_l {A : Type} {a b : A}  (P : A -> Type) (p : a = b)
   : P a -> P b := match p with refl x => id end.
 
-Arguments transport_l {A}%type P%map {a b} p%path : simpl nomatch.
+Arguments transport_l {A}%type {a b} P%map p%path : simpl nomatch.
 
 Notation transport := transport_l.
 Notation "p #" := (transport _ p%path)
@@ -479,17 +479,17 @@ Notation "p #" := (transport _ p%path)
     left associativity,
     only parsing) : path_scope.
 
-Definition transport_r {A : Type} (P : A -> Type) {a b : A} (p : a = b)
+Definition transport_r {A : Type} {a b : A}  (P : A -> Type) (p : a = b)
   : P b -> P a := match p with refl x => arr_id (P x) end.
 
-Arguments transport_r {A}%type P%map {a b} p%path : simpl nomatch.
+Arguments transport_r {A}%type {a b} P%map p%path : simpl nomatch.
 
 
-Definition ap {A B : Type} (f : A -> B) {a b : A} (p : a = b)
+Definition ap {A B : Type} {a b : A} (f : A -> B) (p : a = b)
   : f a = f b := match p with refl x => refl (f x) end.
 
 Register ap as core.identity.congr.
-Global Arguments ap {A B}%type f%map {a b} p%path.
+Global Arguments ap {A B}%type {a b} f%map p%path.
 
 
 Definition arr_compd {A B : Type} {P : B -> Type}
@@ -509,11 +509,11 @@ Notation "g 'oD' f" := (g ∘ f)
     only parsing ) : map_scope.
 
 
-Definition apd {A : Type} {P : A -> Type}
-  (f : forall x : A, P x) {a b : A} (p : a = b)
+Definition apd {A : Type} {P : A -> Type} {a b : A}
+  (f : forall x : A, P x) (p : a = b)
   : p # (f a) = f b := match p with refl x => refl (f x) end. 
 
-Arguments apd {A}%type P%map f%map {a b} p%path : simpl nomatch.
+Arguments apd {A}%type {P}%map {a b} f%map p%path : simpl nomatch.
 
 
 #[export] Hint Resolve refl inverse : path_hints.
