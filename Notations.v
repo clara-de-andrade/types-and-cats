@@ -3,6 +3,9 @@
 Declare Scope type_scope.
 Bind Scope type_scope with Sortclass.
 
+Declare Scope map_scope.
+Bind Scope map_scope with Funclass.
+
 (* bug fix *)
 Local Set Warnings Append "-skip-spaces-curly".
 
@@ -77,7 +80,6 @@ Reserved Notation "x '•' y"
     right associativity ).
 
 Declare Scope core_scope.
-Declare Scope map_scope.
 Declare Scope equiv_scope.
 Declare Scope path_scope.
 Declare Scope fib_scope.

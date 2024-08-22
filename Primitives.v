@@ -449,8 +449,7 @@ Notation transport := transport_l.
 Notation "p *" := (transport _ p%path)
   ( at level 1,
     left associativity,
-    only parsing,
-    format "p '*'" ) : path_scope.
+    only parsing) : path_scope.
 
 Definition transport_r {A : Type} (P : A -> Type)
   {a b : A} (p : a = b) : P b -> P a :=
