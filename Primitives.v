@@ -186,6 +186,27 @@ Notation "g 'o' f" := (g ∘ f)
     right associativity,
     only parsing ) : map_scope.
 
+(** We also define constant maps and composition by dependent maps.
+**)
+
+Notation arr_const := (fun x _ => x).
+
+Definition arr_compd {A B : Type} {P : B -> Type}
+  (f : A -> B) (g : forall x : B, P x)
+  : forall x : A, P (f x) := fun x => g (f x).
+
+Global Arguments arr_compd {A B}%type P%map (f g)%map.
+#[export] Hint Unfold arr_compd : core.
+
+Notation "g '∘D' f" := (arr_compd f g)
+  ( at level 40,
+    right associativity
+  ) : map_scope.
+Notation "g 'oD' f" := (g ∘ f)
+  ( at level 40,
+    right associativity,
+    only parsing ) : map_scope.
+
 
 (** Moreover, we can prove that [<->] is a reflexive, symmetric and transitive
     relation, and so, an instance of the above typeclasses, which allows for
@@ -490,23 +511,6 @@ Definition ap {A B : Type} {a b : A} (f : A -> B) (p : a = b)
 
 Register ap as core.identity.congr.
 Global Arguments ap {A B}%type {a b} f%map p%path.
-
-
-Definition arr_compd {A B : Type} {P : B -> Type}
-  (f : A -> B) (g : forall x : B, P x)
-  : forall x : A, P (f x) := fun x => g (f x).
-
-Global Arguments arr_compd {A B}%type P%map (f g)%map.
-#[export] Hint Unfold arr_compd : core.
-
-Notation "g '∘D' f" := (arr_compd f g)
-  ( at level 40,
-    right associativity
-  ) : map_scope.
-Notation "g 'oD' f" := (g ∘ f)
-  ( at level 40,
-    right associativity,
-    only parsing ) : map_scope.
 
 
 Definition apd {A : Type} {P : A -> Type} {a b : A}
