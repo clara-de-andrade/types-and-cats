@@ -468,8 +468,8 @@ Notation "p '@' q" := (concat p%path q%path)
     only parsing ) : path_scope.
 
 
-Definition transport_l {A : Type} (P : A -> Type)
-  {a b : A} (p : a = b) : P a -> P b := match p with refl x => id end.
+Definition transport_l {A : Type} (P : A -> Type) {a b : A} (p : a = b)
+  : P a -> P b := match p with refl x => id end.
 
 Arguments transport_l {A}%type P%map {a b} p%path : simpl nomatch.
 
@@ -479,14 +479,14 @@ Notation "p #" := (transport _ p%path)
     left associativity,
     only parsing) : path_scope.
 
-Definition transport_r {A : Type} (P : A -> Type)
-  {a b : A} (p : a = b) : P b -> P a := match p with refl x => id end.
+Definition transport_r {A : Type} (P : A -> Type) {a b : A} (p : a = b)
+  : P b -> P a := match p with refl x => arr_id (P x) end.
 
 Arguments transport_r {A}%type P%map {a b} p%path : simpl nomatch.
 
 
-Definition ap {A B : Type} (f : A -> B) {a b : A} (p : a = b) : f a = f b :=
-  match p with refl x => refl (f x) end.
+Definition ap {A B : Type} (f : A -> B) {a b : A} (p : a = b)
+  : f a = f b := match p with refl x => refl (f x) end.
 
 Register ap as core.identity.congr.
 Global Arguments ap {A B}%type f%map {a b} p%path.
