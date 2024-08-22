@@ -476,9 +476,3 @@ Arguments apd {A}%type P%map f%map {a b} p%path : simpl nomatch.
   (* ??? *)
 #[export] Hint Resolve refl : core.
   (* ??? *)
-
-
-(*
-Example ap_concat_l {A : Type} {a b c : A}
-  (p p' : a = b) (q : b = c) : p • q = p' • q.
-*)
