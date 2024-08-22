@@ -40,6 +40,10 @@ Notation "g '∘' f" := (map_comp g f)
   ( at level 40,
     right associativity
   ) : map_scope.
+Notation "g 'o' f" := (g ∘ f)
+  ( at level 40,
+    right associativity,
+    only parsing ) : map_scope.
 
 (** TODO: learn and explain *)
 
@@ -306,9 +310,10 @@ Notation "'¬' A" := (not A)
   ( at level 35,
     right associativity
   ) : type_scope.
-Notation "'¬¬' A" := (¬ ¬A)
+Notation "'~' A" := (¬A)
   ( at level 35,
-    right associativity
+    right associativity,
+    only parsing
   ) : type_scope.
 
 
@@ -317,6 +322,7 @@ Notation "'¬¬' A" := (¬ ¬A)
 Inductive Nat : Type :=
 | O : Nat
 | S (n : Nat) : Nat.
+Notation "'ℕ'" := Nat.
 
 Declare Scope nat_scope.
 Delimit Scope nat_scope with nat.
@@ -435,13 +441,16 @@ Arguments concat {A} {a b c} p q : simpl nomatch.
 
 
 Notation "p '•' q" := (concat p%path q%path)
-    ( at level 40,
-    right associativity ) : path_scope.
+    ( at level 50,
+    left associativity ) : path_scope.
+Notation "p '@' q" := (concat p%path q%path)
+    ( at level 50,
+    left associativity,
+    only parsing ) : path_scope.
 
 
 Definition transport_l {A : Type} (P : A -> Type)
-  {a b : A} (p : a = b) : P a -> P b :=
-  match p with refl x => id end.
+  {a b : A} (p : a = b) : P a -> P b := match p with refl x => id end.
 
 Arguments transport_l {A}%type P%map {a b} p%path : simpl nomatch.
 
@@ -452,8 +461,7 @@ Notation "p *" := (transport _ p%path)
     only parsing) : path_scope.
 
 Definition transport_r {A : Type} (P : A -> Type)
-  {a b : A} (p : a = b) : P b -> P a :=
-  match p with refl x => id end.
+  {a b : A} (p : a = b) : P b -> P a := match p with refl x => id end.
 
 Arguments transport_r {A}%type P%map {a b} p%path : simpl nomatch.
 
@@ -466,8 +474,8 @@ Global Arguments ap {A B}%type f%map {a b} p%path.
 
 
 Definition apd {A : Type} {P : A -> Type}
-  (f : forall x : A, P x) {a b : A} (p : a = b) : p*(f a) = f b :=
-  match p with refl x => refl (f x) end. 
+  (f : forall x : A, P x) {a b : A} (p : a = b)
+  : p*(f a) = f b := match p with refl x => refl (f x) end. 
 
 Arguments apd {A}%type P%map f%map {a b} p%path : simpl nomatch.
 

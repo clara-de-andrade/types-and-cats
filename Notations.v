@@ -75,9 +75,7 @@ Reserved Notation "x '^-1'"
   ( at level 1,
     left associativity,
     format "x '^-1'" ).
-Reserved Notation "x '•' y"
-  ( at level 40,
-    right associativity ).
+
 
 Declare Scope core_scope.
 Declare Scope equiv_scope.
