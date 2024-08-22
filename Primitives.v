@@ -455,7 +455,7 @@ Definition transport_l {A : Type} (P : A -> Type)
 Arguments transport_l {A}%type P%map {a b} p%path : simpl nomatch.
 
 Notation transport := transport_l.
-Notation "p *" := (transport _ p%path)
+Notation "p #" := (transport _ p%path)
   ( at level 1,
     left associativity,
     only parsing) : path_scope.
@@ -475,7 +475,7 @@ Global Arguments ap {A B}%type f%map {a b} p%path.
 
 Definition apd {A : Type} {P : A -> Type}
   (f : forall x : A, P x) {a b : A} (p : a = b)
-  : p*(f a) = f b := match p with refl x => refl (f x) end. 
+  : p # (f a) = f b := match p with refl x => refl (f x) end. 
 
 Arguments apd {A}%type P%map f%map {a b} p%path : simpl nomatch.
 
