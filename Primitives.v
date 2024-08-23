@@ -269,6 +269,7 @@ Notation "5" := (S (S (S (S (S O))))) : nat_scope.
 
 Inductive Id {A : Type} : A -> A -> Type :=
 | refl (a : A) : Id a a.
+Arguments refl a : simpl nomatch.
 
 Notation "a = b :> A" := (@Id A a b) : type_scope.
 Notation "a = b" := (a = b :> _) : type_scope.
