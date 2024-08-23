@@ -11,10 +11,6 @@ Local Unset Elimination Schemes.
 (* end hide *)
 
 
-(************************************************************************)
-
-(** ** [->] and [forall] types *)
-
 (** Dependent map types [forall x : A, P x], as well as as anonymous maps
     [fun x : A => t] are built into Coq, so we don't need to define them.
     Instead, we may simply define map types [A -> B] as a special case of
@@ -25,10 +21,6 @@ Definition arr (A B : Type) : Type := forall _ : A, B.
 
 Notation "A -> B" := (arr A B) : type_scope.
 
-
-(************************************************************************)
-
-(** ** [*] and [exists] types *)
 
 (** Pair types [A * B] are defined using Coq's [Record]s, which are very
     similar to C's `struct`s. We define the type [A * B] as a record of
@@ -141,10 +133,6 @@ Register pr2 as core.sigT.proj2.
 (* end hide *)
 
 
-(************************************************************************)
-
-(** ** [+], [Unit] and [Empty] types **)
-
 (** The remaining types can all be defined with [Inductive] and bear
     little need for explanation. For now, we make only a few remarks about
     these types. In particular, the type [A + B] is more idiomatically
@@ -228,11 +216,6 @@ Notation "1" := Unit : type_scope.
 Notation "0" := Empty : type_scope.
 
 
-(************************************************************************)
-
-(** printing Nat #&#8469;# *)
-  (* for printing [Nat] as ℕ *)
-
 (** ** The [Nat] type *)
 
 (** A (perhaps, unsurprisingly) ubiqutous type is the type [Nat] of
@@ -277,10 +260,6 @@ Notation "3" := (S (S (S O))) : nat_scope.
 Notation "4" := (S (S (S (S O)))) : nat_scope.
 Notation "5" := (S (S (S (S (S O))))) : nat_scope.
 
-
-(************************************************************************)
-
-(** ** [=] types *)
 
 (** Last but not least, we inductively define the type [a = b :> A], where
     [a : A] and [b : B] are terms of the same type [A]. We may also denote
