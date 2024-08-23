@@ -4,12 +4,10 @@
 
 From TypesAndCats Require Export Settings Notations.
 
-
 (* begin hide *)
 Local Unset Elimination Schemes.
   (* TODO: understand *)
 (* end hide *)
-
 
 (** Dependent map types [forall x : A, P x], as well as as anonymous maps
     [fun x : A => t] are built into Coq, so we don't need to define them.
