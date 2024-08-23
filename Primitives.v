@@ -9,6 +9,7 @@ Local Unset Elimination Schemes.
   (* TODO: understand *)
 (* end hide *)
 
+
 (** Dependent map types [forall x : A, P x], as well as as anonymous maps
     [fun x : A => t] are built into Coq, so we don't need to define them.
     Instead, we may simply define map types [A -> B] as a special case of
@@ -41,6 +42,7 @@ Arguments snd {A B} _.
 
 Notation "A * B" := (prod A B) : type_scope.
 
+
 (** We may use the standard mathematical notation for ordered types,
     denoting [pair x y] instead by [(a, b)]. Moreover, we consider the
     [*] type operator to be right-associative (that is, [A * B * C] means
@@ -50,6 +52,7 @@ Notation "A * B" := (prod A B) : type_scope.
     that terms of the form [(x1, ..., xn)] are _n-tuples_, and Coq's
     notation system is capable of defining the notation for n-tuples 
     uniformily in terms of [pair]. *)
+
 
 Notation "( x , .. , y , z )" := (pair x .. (pair y z) ..) : core_scope.
 
@@ -201,8 +204,6 @@ Notation "1" := Unit : type_scope.
 Notation "0" := Empty : type_scope.
 
 
-(** ** The [Nat] type *)
-
 (** A (perhaps, unsurprisingly) ubiqutous type is the type [Nat] of
     natural numbers, and its inductive definition should be the most
     familiar one. It has only two constructors, [O : Nat] and
@@ -342,4 +343,5 @@ Register Id_rect as core.identity.ind.
     - understand [Register] and [Hint] commands
     - fix typos, unify typography (commas)
     - write better introduction
-*)
+    - edit .css/preamble tp pretty-print [Nat] and other tokens
+**)
