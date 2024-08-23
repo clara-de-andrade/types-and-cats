@@ -302,6 +302,11 @@ Arguments Id_ind [A] a P f y p : rename.
 Arguments Id_rec [A] a P f y p : rename.
 
 
+Declare Scope path_scope.
+Delimit Scope path_scope with path.
+Bind Scope path_scope with Id.
+
+
 (* begin hide *)
 Register Id as core.identity.type.
 Register refl as core.identity.refl.

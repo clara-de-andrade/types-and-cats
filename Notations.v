@@ -79,7 +79,6 @@ Reserved Notation "x '^-1'"
 
 Declare Scope core_scope.
 Declare Scope equiv_scope.
-Declare Scope path_scope.
 Declare Scope fib_scope.
 Declare Scope nat_scope.
 
@@ -87,11 +86,9 @@ Delimit Scope core_scope  with core.
 Delimit Scope type_scope  with type.
 Delimit Scope map_scope   with map.
 Delimit Scope equiv_scope with equiv.
-Delimit Scope path_scope  with path.
 Delimit Scope fib_scope   with fib.
 
 Global Open Scope equiv_scope.
-Global Open Scope path_scope.
 Global Open Scope fib_scope.
 Global Open Scope map_scope.
 Global Open Scope type_scope.
