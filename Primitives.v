@@ -1,6 +1,3 @@
-(** printing Nat #&#x2115;# *)
-  (* for printing [Nat] as ℕ *)
-
 (** * Primitive types *)
 
 (** Here we simply introduce the primitive types of our type theory. *)
@@ -227,6 +224,8 @@ Notation "0" := Empty : type_scope.
     [S : Nat -> Nat], which respectively denote the _zero_ constant and
     the _successor_ map of [Nat]. *)
 
+(** printing Nat #&#x2115;# *)
+  (* for printing [Nat] as ℕ *)
 
 Inductive Nat : Type :=
 | O : Nat
