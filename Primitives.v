@@ -232,6 +232,9 @@ Inductive Nat : Type :=
 | S (n : Nat) : Nat.
   (* throws bad-set-minimization *)
 
+Scheme Nat_ind := Induction for Nat Sort Type.
+Scheme Nat_rec := Minimality for Nat Sort Type.
+Definition Nat_rect := Nat_ind.
 
 (* begin hide *)
 Notation "'ℕ'" := Nat.
