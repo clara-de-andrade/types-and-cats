@@ -210,9 +210,6 @@ Notation "0" := Empty : type_scope.
     [S : Nat -> Nat], which respectively denote the _zero_ constant and
     the _successor_ map of [Nat]. *)
 
-(** printing Nat #&#x2115;# *)
-  (* for printing [Nat] as ℕ *)
-
 Inductive Nat : Type :=
 | O : Nat
 | S (n : Nat) : Nat.
@@ -224,6 +221,8 @@ Scheme Nat_rec := Minimality for Nat Sort Type.
 Definition Nat_rect := Nat_ind.
 
 (* begin hide *)
+(** printing Nat #&#x2115;# *)
+  (* for printing [Nat] as ℕ in the docs. *)
 Notation "'ℕ'" := Nat.
   (* for printing [Nat] as ℕ in the IDE. *)
 (* end hide *)
