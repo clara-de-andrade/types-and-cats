@@ -1,3 +1,6 @@
+(** printing Nat #&#x2115;# *)
+  (* for printing [Nat] as ℕ *)
+
 (** * Primitive types *)
 
 (** Here we simply introduce the primitive types of our type theory. *)
