@@ -43,6 +43,10 @@ Reserved Notation "x \/ y"
   ( at level 85,
     right associativity ).
 
+Reserved Notation "x + 1"
+  ( at level 1,
+    left associativity,
+    format "x '+' '/ ' '1'" ).
 Reserved Notation "x + y"
   ( at level 50,
     left associativity ).
@@ -71,7 +75,7 @@ Reserved Notation "x = y = z"
     y at next level,
     no associativity ).
 
-Reserved Notation "x '^'"
+Reserved Notation "x ^"
   ( at level 1,
     left associativity,
     format "x '^'" ).
@@ -86,7 +90,7 @@ Reserved Notation "x == y"
   ( at level 70,
     no associativity ).
 
-Reserved Notation "x '^-1'"
+Reserved Notation "x ^-1"
   ( at level 1,
     left associativity,
     format "x '^-1'" ).
