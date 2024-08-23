@@ -53,14 +53,6 @@ Notation "A * B" := (prod A B) : type_scope.
 
 Notation "( x , .. , y , z )" := (pair x .. (pair y z) ..) : core_scope.
 
-(** In the spirit of type theory, we may alternatively denote the type
-    [A * B] by [A /\ B] as if it and the types [A], [B] where propositions
-    of formal logic instead, again for reasons which will eventually
-    become clearer. It is worth remarking this is already apparent in the
-    notation for dependent map types, namely [forall x : A, P x]. *)
-
-Notation "A /\ B" := (prod A B) : type_scope.
-
 (** Coq has commands for defining the eliminators of [prod] as an
     induuctive type. Namely, the commands bellow define the terms
     [prod_rect] and [prod_rec], and in particular, [prod_rect], or
@@ -137,9 +129,7 @@ Register pr2 as core.sigT.proj2.
     known as the _sum_ of the types [A], [B] while [Unit] is a _terminal_
     type and [Empty] is an _initial_ type. Again, the motive behind these
     names will eventually become clearer. The maps [inl : A -> A + B] and
-    [inr : B -> A + B] are said to be _injections_ of [A + B], and we may
-    denote [A + B] alternatively by [A \/ B], as if it and [A], [B] are
-    propositions, once again, for reasons we will come to later. *)
+    [inr : B -> A + B] are said to be _injections_ of [A + B]. *)
 
 Inductive sum (A B : Type) : Type :=
 | inl (a : A) : sum A B
@@ -151,10 +141,6 @@ Arguments inr {A B} _ , A [B] _.
 Notation "A + B" := (sum A B)
   ( at level 50,
     left associativity ) : type_scope.
-Notation "A \/ B" := (A + B)
-  ( at level 85,
-    right associativity,
-    only parsing ) : type_scope.
 
 
 Scheme sum_ind := Induction for sum Sort Type.
@@ -309,7 +295,4 @@ Register Id_rect as core.identity.ind.
     hand, [a = b] corresponds to the space of _paths_ between two points
     [a], [b] of the same space. Howver, this connection between paths and
     equalities runs deeper, and the aim of these notes is to present some
-    of the elementary development of _homotopy type theory_, or HoTT,
-    namely, the theory of homotopy types and the interpretation of
-    logic, set theory and category theory within homotopy theory through
-    this formal framework. *)
+    of the elementary development of _homotopy type theory_, or HoTT. *)
