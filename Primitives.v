@@ -293,6 +293,6 @@ Register Id_rect as core.identity.ind.
     [a], [b] of the same type, and we can view the terms of this type as
     _proofs_ of the truth of this proposition. Topologically, on the other
     hand, [a = b] corresponds to the space of _paths_ between two points
-    [a], [b] of the same space. Howver, this connection between paths and
+    [a], [b] of the same space. However, this connection between paths and
     equalities runs deeper, and the aim of these notes is to present some
     of the elementary development of _homotopy type theory_, or HoTT. *)
