@@ -92,16 +92,19 @@ Reserved Notation "x == y"
 Declare Scope core_scope.
 Declare Scope equiv_scope.
 Declare Scope fib_scope.
-Declare Scope nat_scope.
 
-Delimit Scope core_scope  with core.
+
 Delimit Scope type_scope  with type.
 Delimit Scope map_scope   with map.
+
+Delimit Scope core_scope  with core.
 Delimit Scope equiv_scope with equiv.
 Delimit Scope fib_scope   with fib.
 
+
+Global Open Scope type_scope.
+Global Open Scope map_scope.
+
+Global Open Scope core_scope.
 Global Open Scope equiv_scope.
 Global Open Scope fib_scope.
-Global Open Scope map_scope.
-Global Open Scope type_scope.
-Global Open Scope core_scope.

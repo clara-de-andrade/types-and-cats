@@ -264,7 +264,9 @@ Notation "'ℕ'" := Nat.
 
 Declare Scope nat_scope.
 Delimit Scope nat_scope with nat.
+
 Bind Scope nat_scope with Nat.
+
 
 Arguments S _%nat.
 
