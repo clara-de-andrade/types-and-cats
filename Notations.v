@@ -71,11 +71,6 @@ Reserved Notation "x = y = z"
     y at next level,
     no associativity ).
 
-Reserved Notation "x '^-1'"
-  ( at level 1,
-    left associativity,
-    format "x '^-1'" ).
-
 Reserved Notation "x '^'"
   ( at level 1,
     left associativity,
@@ -87,6 +82,14 @@ Reserved Notation "x '@' y"
 Reserved Notation "x == y"
   ( at level 70,
     no associativity ).
+
+Reserved Notation "x '^-1'"
+  ( at level 1,
+    left associativity,
+    format "x '^-1'" ).
+Reserved Notation "x 'o' y"
+  ( at level 50,
+    left associativity ).
 
 
 Declare Scope core_scope.
