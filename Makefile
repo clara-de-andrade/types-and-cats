@@ -9,7 +9,7 @@ COQMFFLAGS := -Q . TypesAndCats
 COQDOCFLAGS := --utf8
 
 ALLVFILES := \
-	Settings.v Notations.v Primitives.v Groupoids.v
+	Settings.v Notations.v Primitives.v Univalence.v #Groupoids.v
 
 build:
 	$(MAKE) -f Makefile.coq
