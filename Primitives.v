@@ -285,6 +285,9 @@ Register Id as core.identity.type.
 Register refl as core.identity.refl.
 Register Id_rect as core.identity.ind.
   (* TODO: understand *)
+
+#[export] Hint Resolve refl : core.
+  (* TODO: understand *)
 (* end hide *)
 
 
