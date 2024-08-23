@@ -244,12 +244,18 @@ Bind Scope nat_scope with Nat.
 
 Arguments S _%nat.
 
+Local Open Scope nat.
+
 Notation "0" := O : nat_scope.
-Notation "1" := (S O) : nat_scope.
-Notation "2" := (S (S O)) : nat_scope.
-Notation "3" := (S (S (S O))) : nat_scope.
-Notation "4" := (S (S (S (S O)))) : nat_scope.
-Notation "5" := (S (S (S (S (S O))))) : nat_scope.
+Notation "n + 1" := (S n%nat) : nat_scope.
+
+Notation "1" := 0 + 1 : nat_scope.
+Notation "2" := 1 + 1 : nat_scope.
+Notation "3" := 2 + 1 : nat_scope.
+Notation "4" := 3 + 1 : nat_scope.
+Notation "5" := 4 + 1 : nat_scope.
+
+Local Close Scope nat.
 
 
 (** Last but not least, we inductively define the type [a = b :> A], where
@@ -291,11 +297,49 @@ Register Id_rect as core.identity.ind.
 (* end hide *)
 
 
-(** The [=] types are central to our theory. Logically, the type [a = b]
-    corresponds to a proposition expressing the _equality_ of two terms
-    [a], [b] of the same type, and we can view the terms of this type as
-    _proofs_ of the truth of this proposition. Topologically, on the other
-    hand, [a = b] corresponds to the space of _paths_ between two points
-    [a], [b] of the same space. However, this connection between paths and
-    equalities runs deeper, and the aim of these notes is to present some
-    of the elementary development of _homotopy type theory_, or HoTT. *)
+(** There is a famous correspondence between types and their terms, and
+    propositions and their proofs, called the _Curry-Howard isomorphism_,
+    which allow us to reason type-theoretically about formal proofs. For
+    instance, as the notation suggests, an arrow type [A -> B] corresponds
+    to an implication from [A] to [B], and a map [f] of this type is a
+    proof of this implication in the sense that, for any proof [a : A] of
+    the antecedent, this map yields a proof [f a : B] of the consequent.
+    Similarly, the type [forall x : A, P x] corresponds to a universal
+    proposition, and a map [f] of this type is a proof of that proposition
+    in the sense that, for any term [x : A] of the type [A], this map
+    yields a proof [f x : P x] of the proposition [P x] depending on
+    this variable.
+
+    That all being said, we will formally define what it means for a type
+    to be a proposition after we sufficiently develop our type theory, and
+    until then, if we speak of types as propositions and terms as proofs,
+    we mean it informally, as a simple suggestion for the reader to think
+    about the types as expressing conditions about their components and
+    the terms as witnesses to the satisfaction of those conditions. For
+    instance, the type [a = b :> A], understood in this way, expresses a
+    condition of equality between terms [a b : A] of type [A], and in
+    particular, for any [a : A], the term [refl a] is a witness to the
+    equality [a = a :> A] between [a] and itself, or more tersely, to
+    [a] satisfying the condition of "being a term of type [A] equal to
+    itself".
+
+    Nevertheless, we may informally interpret types in other ways which
+    may be more convenient or instructive. More specifically, when we
+    interpret types _topologically_, as (topological) _spaces_, and their
+    terms as _points_ in those spaces, then we may alternatively interpret
+    the type [a = b :> A] as a space of _paths_ between points [a b : A]
+    in [A]. However, the connection between paths and equalities, and the
+    underlying correspondence between type theory and topology, runs even
+    deeper, and the aim of these notes is to introduce the reader to the
+    elementary portion of _homotopy type theory_, or simply HoTT, which
+    is a small step away from our formal type theory as we have presented
+    it so far. *)
+
+(** TODOs:
+    - explain eliminators (induction, recursor)
+    - explain pattern matching in terms of them
+    - explain scopes
+    - understand [Register] and [Hint] commands
+    - fix typos, unify typography (commas)
+    - write better introduction
+*)
