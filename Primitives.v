@@ -199,6 +199,7 @@ Inductive Empty : Type := .
 
 Scheme Empty_ind := Induction for Empty Sort Type.
 Scheme Empty_rec := Minimality for Empty Sort Type.
+
 Definition Empty_rect := Empty_ind.
 
 
@@ -234,6 +235,7 @@ Inductive Nat : Type :=
 
 Scheme Nat_ind := Induction for Nat Sort Type.
 Scheme Nat_rec := Minimality for Nat Sort Type.
+
 Definition Nat_rect := Nat_ind.
 
 (* begin hide *)
